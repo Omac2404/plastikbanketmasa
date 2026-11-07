@@ -1,0 +1,158 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-home' }) %>
+<% const h = d.hero || {}, v = d.values || {}, pr = d.producer || {}, ps = d.products || {}, q = d.quality || {}, vd = d.video || {}, sh = d.shipping || {}, ct = d.contact || {};
+   const stats = ((d.stats || {}).items || []).filter(s => s.value && String(s.value).trim()); %>
+
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <h1 class="hero__title"><%- emphasize(h.title) %></h1>
+      <% if (h.text) { %><p class="hero__text"><%= h.text %></p><% } %>
+      <div class="hero__btns">
+        <% if (h.btn_text) { %><a class="btn btn--dark btn--lg" href="<%= h.btn_url || '#' %>"><%= h.btn_text %><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a><% } %>
+        <% if (h.btn2_text) { %><a class="btn btn--line btn--lg" href="<%= h.btn2_url || '#' %>"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><%= h.btn2_text %></a><% } %>
+      </div>
+      <dl class="hero__facts">
+        <div><dt>Üretim yeri</dt><dd>Bornova, İzmir</dd></div>
+        <% if (salesPhone) { %><div><dt>Satış hattı</dt><dd><a href="<%= telHref(salesPhone) %>"><%= salesPhone %></a></dd></div><% } %>
+      </dl>
+    </div>
+    <div class="hero__media">
+      <%- img(h.image, { alt: h.image_alt || '', sizes: '(min-width: 1100px) 640px, 100vw', eager: true }) %>
+    </div>
+  </div>
+</section>
+
+<% if ((v.items || []).length) { %>
+<section class="sec values">
+  <div class="wrap values__grid">
+    <div class="values__media"><%- img(v.image, { sizes: '(min-width: 900px) 480px, 100vw' }) %></div>
+    <div>
+      <h2 class="sec__title"><%= v.title %></h2>
+      <ol class="numlist">
+        <% v.items.forEach((it, i) => { %>
+        <li>
+          <span class="numlist__n" aria-hidden="true"><%= String(i + 1).padStart(2, '0') %></span>
+          <div><h3><%= it.title %></h3><p><%= it.text %></p></div>
+        </li>
+        <% }) %>
+      </ol>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="sec sec--sand producer">
+  <div class="wrap producer__grid">
+    <div class="producer__copy">
+      <h2 class="sec__title"><%= pr.title %></h2>
+      <% for (const p of paragraphs(pr.text)) { %><p class="lead-p"><%= p %></p><% } %>
+      <% if (pr.btn_text) { %><a class="link-arrow" href="<%= pr.btn_url %>"><%= pr.btn_text %><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a><% } %>
+    </div>
+    <div class="producer__media">
+      <figure class="producer__a"><%- img(pr.image1, { sizes: '(min-width: 900px) 420px, 70vw' }) %></figure>
+      <figure class="producer__b"><%- img(pr.image2, { sizes: '(min-width: 900px) 360px, 60vw' }) %></figure>
+    </div>
+  </div>
+</section>
+
+<% if (products.length) { %>
+<section class="sec products" id="urunler">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 class="sec__title"><%= ps.title || 'Ürünlerimiz' %></h2>
+      <% if (ps.text) { %><p class="sec__lead"><%= ps.text %></p><% } %>
+    </div>
+    <div class="pgrid">
+      <% for (const p of products) { %><%- include('../partials/product-card', { p }) %><% } %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (youtubeId(vd.youtube)) { %>
+<section class="sec sec--ink video" id="kurulum">
+  <div class="wrap video__grid">
+    <div class="video__copy">
+      <h2 class="sec__title"><%= vd.title %></h2>
+      <% if (vd.text) { %><p><%= vd.text %></p><% } %>
+      <% if ((vd.steps || []).length) { %>
+      <ol class="steps"><% for (const s of vd.steps) { %><li><%= s.text %></li><% } %></ol>
+      <% } %>
+    </div>
+    <div class="video__player"><%- include('../partials/youtube', { ytUrl: vd.youtube, ytTitle: vd.title, ytPoster: vd.poster }) %></div>
+  </div>
+</section>
+<% } %>
+
+<% if (stats.length) { %>
+<section class="stats" aria-label="Rakamlarla biz">
+  <div class="wrap stats__row">
+    <% for (const s of stats) { %><div class="stat"><span class="stat__v"><%= s.value %></span><span class="stat__l"><%= s.label %></span></div><% } %>
+  </div>
+</section>
+<% } %>
+
+<section class="sec quality">
+  <div class="wrap quality__grid">
+    <h2 class="sec__title"><%= q.title %></h2>
+    <div class="quality__body">
+      <% const qp = paragraphs(q.text); qp.forEach((p, i) => { %><p class="<%= i === 0 ? 'quality__first' : '' %>"><%= p %></p><% }) %>
+      <% if (q.btn_text) { %><a class="link-arrow" href="<%= q.btn_url %>"><%= q.btn_text %><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a><% } %>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--sand ship">
+  <div class="wrap ship__grid">
+    <div class="ship__media"><%- img(sh.image, { sizes: '(min-width: 900px) 440px, 80vw' }) %></div>
+    <div class="ship__copy">
+      <h2 class="sec__title"><%= sh.title %></h2>
+      <p class="lead-p"><%= sh.text %></p>
+      <% if (sh.btn_text) { %><a class="btn btn--accent btn--lg" href="<%= sh.btn_url || '/iletisim' %>"><%= sh.btn_text %><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a><% } %>
+    </div>
+  </div>
+</section>
+
+<% if (posts.length) { %>
+<section class="sec blogteaser">
+  <div class="wrap">
+    <div class="sec__head sec__head--row">
+      <h2 class="sec__title">Blogdan</h2>
+      <a class="link-arrow" href="/blog">Tüm yazılar<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="postlist">
+      <% for (const p of posts) { %>
+      <article class="postrow">
+        <% if (p.cover) { %><div class="postrow__media"><%- img(p.cover, { alt: '', sizes: '200px' }) %></div><% } %>
+        <div>
+          <p class="postrow__meta"><time datetime="<%= String(p.published_at).slice(0,10) %>"><%= dateTR(p.published_at) %></time><% if (p.cat_name) { %> · <%= p.cat_name %><% } %></p>
+          <h3 class="postrow__title"><a href="/<%= p.slug %>"><%= p.title %></a></h3>
+          <% if (p.excerpt) { %><p><%= clip(p.excerpt, 180) %></p><% } %>
+        </div>
+      </article>
+      <% } %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="sec contactblock" id="form">
+  <div class="wrap contactblock__grid">
+    <div class="contactblock__copy">
+      <h2 class="sec__title"><%= ct.title %></h2>
+      <% if (ct.text) { %><p class="lead-p"><%= ct.text %></p><% } %>
+      <ul class="clist">
+        <% if (salesPhone) { %><li><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><div><span>Satış hattı</span><a href="<%= telHref(salesPhone) %>"><%= salesPhone %></a></div></li><% } %>
+        <% if (contact.email) { %><li><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg><div><span>E-posta</span><a href="mailto:<%= contact.email %>"><%= contact.email %></a></div></li><% } %>
+        <% if (contact.hours) { %><li><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><span>Çalışma saatleri</span><%= contact.hours %></div></li><% } %>
+      </ul>
+      <%- include('../partials/map') %>
+    </div>
+    <div class="contactblock__form">
+      <%- include('../partials/contact-form', { formId: 'home', formState: '' }) %>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

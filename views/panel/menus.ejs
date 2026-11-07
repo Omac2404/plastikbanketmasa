@@ -1,0 +1,13 @@
+<%- include('_top') %>
+<div class="pagehead"><div><h1 class="h1">Menüler</h1><p class="muted">Sitenin üst menüsü ve footer bağlantıları.</p></div></div>
+<div class="card card--flush">
+  <table class="table">
+    <thead><tr><th>Menü</th><th>Nerede</th><th>Madde</th><th><span class="sr">İşlem</span></th></tr></thead>
+    <tbody>
+      <% for (const m of menus) { %>
+      <tr><td><a href="/panel/menuler/<%= m.key %>"><strong><%= m.label %></strong></a></td><td class="muted"><%= m.description %></td><td><%= m.list.length %></td><td class="right"><a class="btn btn--ghost btn--sm" href="/panel/menuler/<%= m.key %>">Düzenleyin</a></td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<%- include('_bottom') %>

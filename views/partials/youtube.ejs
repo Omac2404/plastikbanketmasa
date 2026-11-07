@@ -1,0 +1,14 @@
+<% const vid = youtubeId(ytUrl); if (vid) { const ttl = typeof ytTitle !== 'undefined' && ytTitle ? ytTitle : 'Video'; %>
+<div class="yt" data-yt="<%= vid %>" data-title="<%= ttl %>">
+  <% if (typeof ytPoster !== 'undefined' && ytPoster) { %>
+    <%- img(ytPoster, { alt: '', sizes: '(min-width: 1100px) 900px, 100vw', cls: 'yt__poster' }) %>
+  <% } else { %>
+    <img class="yt__poster" src="https://i.ytimg.com/vi/<%= vid %>/hqdefault.jpg" alt="" width="480" height="360" loading="lazy">
+  <% } %>
+  <button class="yt__play" type="button" aria-label="<%= ttl %> videosunu oynatın">
+    <span class="yt__icon"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span>
+    <span class="yt__text">Videoyu oynatın</span>
+  </button>
+  <p class="yt__note">Video YouTube üzerinden oynatılır. <a href="https://www.youtube.com/watch?v=<%= vid %>" target="_blank" rel="noopener">YouTube’da açın</a></p>
+</div>
+<% } %>

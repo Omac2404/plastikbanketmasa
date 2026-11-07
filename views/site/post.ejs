@@ -1,0 +1,35 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-post' }) %>
+<article class="article">
+  <header class="pagehead pagehead--article">
+    <div class="wrap wrap--text">
+      <%- include('../partials/crumbs', { crumbs: [{ label: 'Blog', url: '/blog' }, { label: post.title }] }) %>
+      <% if (post.status !== 'published') { %><p class="draftnote">Taslak önizlemesi. Bu yazı ziyaretçilere görünmüyor.</p><% } %>
+      <h1 class="pagehead__title"><%= post.title %></h1>
+      <p class="postrow__meta"><time datetime="<%= String(post.published_at || post.updated_at).slice(0,10) %>"><%= dateTR(post.published_at || post.updated_at) %></time><% if (post.cat_name) { %> · <a href="/blog?kategori=<%= post.cat_slug %>"><%= post.cat_name %></a><% } %></p>
+    </div>
+  </header>
+  <% if (post.cover) { %><div class="wrap wrap--text article__cover"><%- img(post.cover, { alt: post.title, sizes: '(min-width: 800px) 760px, 100vw', eager: true }) %></div><% } %>
+  <div class="wrap wrap--text prose prose--lg"><%- md(post.body) %></div>
+  <div class="wrap wrap--text article__cta">
+    <p>Plastik banket masa hakkında sorunuz mu var?</p>
+    <a class="btn btn--dark" href="/iletisim#form">Bize yazın<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <% if (salesPhone) { %><a class="btn btn--line" href="<%= telHref(salesPhone) %>"><%= salesPhone %></a><% } %>
+  </div>
+</article>
+<% if (more.length) { %>
+<section class="sec sec--sand">
+  <div class="wrap">
+    <h2 class="sec__title">Diğer yazılar</h2>
+    <div class="postlist">
+      <% for (const p of more) { %>
+      <article class="postrow"><div>
+        <p class="postrow__meta"><%= dateTR(p.published_at) %></p>
+        <h3 class="postrow__title"><a href="/<%= p.slug %>"><%= p.title %></a></h3>
+      </div></article>
+      <% } %>
+    </div>
+  </div>
+</section>
+<% } %>
+<%- include('../partials/footer') %>

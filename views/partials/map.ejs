@@ -1,0 +1,13 @@
+<% if (contact.map_embed) { %>
+<div class="map" data-map="<%= contact.map_embed %>">
+  <div class="map__ph">
+    <svg class="ic map__pin" aria-hidden="true"><use href="#i-pin"/></svg>
+    <p class="map__addr"><%- escapeHtml(contact.address || '').replace(/\n/g, '<br>') %></p>
+    <div class="map__btns">
+      <button type="button" class="btn btn--line btn--sm" data-map-load>Haritayı gösterin</button>
+      <% if (contact.map_link) { %><a class="btn btn--dark btn--sm" href="<%= contact.map_link %>" target="_blank" rel="noopener">Yol tarifi alın</a><% } %>
+    </div>
+    <p class="map__note">Harita Google tarafından yüklenir.</p>
+  </div>
+</div>
+<% } %>

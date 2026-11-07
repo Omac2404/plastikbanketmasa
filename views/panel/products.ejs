@@ -1,0 +1,27 @@
+<%- include('_top') %>
+<div class="pagehead">
+  <div><h1 class="h1">Ürünler</h1><p class="muted">Her ürün sitede kendi sayfasına sahiptir. Sırayı değiştirmek için okları kullanın; ana sayfadaki ve menülerdeki sıra buna göre olur.</p></div>
+  <a class="btn btn--primary" href="/panel/urunler/yeni">+ Yeni ürün</a>
+</div>
+<div class="card card--flush">
+  <table class="table" data-sortable="/panel/urunler-sira">
+    <thead><tr><th class="w-thumb"><span class="sr">Görsel</span></th><th>Ürün</th><th>Kategori</th><th>Durum</th><th>Sıra</th><th><span class="sr">İşlem</span></th></tr></thead>
+    <tbody>
+      <% for (const p of products) { const m = p.d.main || {}; %>
+      <tr data-id="<%= p.id %>">
+        <td><% if (m.cover) { %><img class="tthumb" src="<%= thumb(m.cover) %>" alt=""><% } %></td>
+        <td><a href="/panel/urunler/<%= p.id %>"><strong><%= p.title %></strong></a><br><a class="mono muted" href="/<%= p.slug %>" target="_blank" rel="noopener">/<%= p.slug %></a></td>
+        <td><%= (CATS.find(c => c[0] === p.category) || [,''])[1] %></td>
+        <td><span class="pill pill--<%= p.status %>"><%= p.status === 'published' ? 'yayında' : 'taslak' %></span></td>
+        <td class="nowrap"><button type="button" class="btn btn--icon" data-row-up aria-label="<%= p.title %> yukarı">↑</button><button type="button" class="btn btn--icon" data-row-down aria-label="<%= p.title %> aşağı">↓</button></td>
+        <td class="right nowrap">
+          <a class="btn btn--ghost btn--sm" href="/panel/urunler/<%= p.id %>">Düzenleyin</a>
+          <form method="post" action="/panel/urunler/<%= p.id %>/kopyala" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--text btn--sm" type="submit">Kopyalayın</button></form>
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<p class="hint" data-sort-status role="status"></p>
+<%- include('_bottom') %>

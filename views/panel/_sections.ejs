@@ -1,0 +1,14 @@
+<% for (const [si, s] of schema.sections.entries()) { const sd = data[s.key] || {};
+     const filled = s.fields.filter(f => { const x = sd[f.key]; return Array.isArray(x) ? x.length : (x !== '' && x != null && x !== false); }).length; %>
+<details class="card sect"<%= si < (typeof openCount !== 'undefined' ? openCount : 1) ? ' open' : '' %>>
+  <summary class="sect__sum">
+    <span class="sect__t"><%= s.label %></span>
+    <span class="sect__meta"><%= filled %> / <%= s.fields.length %> alan dolu</span>
+  </summary>
+  <div class="sect__body">
+    <% for (const f of s.fields) { %>
+      <%- include('_field', { f, name: `${s.key}.${f.key}`, value: sd[f.key], idp: s.key }) %>
+    <% } %>
+  </div>
+</details>
+<% } %>

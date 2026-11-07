@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= meta.title %></title>
+<% if (meta.desc) { %><meta name="description" content="<%= meta.desc %>"><% } %>
+<link rel="canonical" href="<%= meta.canonical %>">
+<% if (seo.indexable === false) { %><meta name="robots" content="noindex, nofollow"><% } %>
+<meta property="og:locale" content="tr_TR">
+<meta property="og:type" content="<%= meta.type %>">
+<meta property="og:site_name" content="<%= site.name || 'Plastik Banket Masa' %>">
+<meta property="og:title" content="<%= meta.title %>">
+<% if (meta.desc) { %><meta property="og:description" content="<%= meta.desc %>"><% } %>
+<meta property="og:url" content="<%= meta.canonical %>">
+<% if (meta.image) { %><meta property="og:image" content="<%= siteUrl + meta.image %>"><meta name="twitter:card" content="summary_large_image"><% } %>
+<% if (seo.favicon) { %><link rel="icon" href="<%= thumb(seo.favicon) %>"><link rel="apple-touch-icon" href="<%= seo.favicon %>"><% } %>
+<meta name="theme-color" content="#141414">
+<link rel="preload" href="/fonts/league-spartan/league-spartan-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/montserrat/montserrat-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/montserrat/montserrat-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=<%= assetVersion %>">
+<% for (const ld of jsonLd) { %><script type="application/ld+json"><%- JSON.stringify(ld).replace(/</g, '\\u003c') %></script>
+<% } %>
+<% if (seo.gtm_id) { %><script>window.PBM_GTM=<%- JSON.stringify(String(seo.gtm_id).replace(/[^A-Z0-9-]/gi, '')) %>;</script><% } %>
+</head>

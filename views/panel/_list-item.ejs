@@ -1,0 +1,13 @@
+<li class="list__item">
+  <div class="list__tools">
+    <span class="list__n" aria-hidden="true"></span>
+    <button type="button" data-list-up aria-label="Yukarı taşıyın">↑</button>
+    <button type="button" data-list-down aria-label="Aşağı taşıyın">↓</button>
+    <button type="button" data-list-del aria-label="Maddeyi silin">Sil</button>
+  </div>
+  <div class="list__fields list__fields--<%= f.fields.length %>">
+    <% for (const sf of f.fields) { %>
+      <%- include('_field', { f: sf, name: `${name}.${idx}.${sf.key}`, value: item[sf.key], idp }) %>
+    <% } %>
+  </div>
+</li>

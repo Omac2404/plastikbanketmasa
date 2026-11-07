@@ -1,0 +1,33 @@
+<%- include('_top') %>
+<div class="pagehead"><div><h1 class="h1">Yedekleme</h1><p class="muted">Tüm içerik, ayarlar, kullanıcılar ve form başvuruları tek dosyada. Görsel dosyaları bu yedeğe dahil değildir; onları Easypanel’deki kalıcı disk (volume) yedeği kapsar.</p></div></div>
+<div class="narrow">
+  <div class="card">
+    <div class="card__head">
+      <h2 class="h2">Yedekler</h2>
+      <form method="post" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--primary">Şimdi yedek alın</button></form>
+    </div>
+    <% if (!backups.length) { %><p class="muted">Henüz yedek alınmadı.</p><% } %>
+    <table class="table">
+      <tbody>
+      <% for (const b of backups) { %>
+        <tr>
+          <td class="mono"><%= b.f %></td>
+          <td class="muted"><%= (b.size / 1024 / 1024).toFixed(2) %> MB</td>
+          <td class="right nowrap">
+            <a class="btn btn--ghost btn--sm" href="/panel/ayarlar/yedek/<%= b.f %>">İndirin</a>
+            <form class="inline" method="post" action="/panel/ayarlar/yedek/<%= b.f %>/geri-yukle"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--text btn--sm" data-confirm="Site içeriği bu yedekteki hale dönecek. Mevcut durum önce otomatik yedeklenir. Devam edilsin mi?">Geri yükleyin</button></form>
+            <form class="inline" method="post" action="/panel/ayarlar/yedek/<%= b.f %>/sil"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--text btn--sm btn--danger-text" data-confirm="Yedek dosyası silinsin mi?">Silin</button></form>
+          </td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
+    <p class="hint">Son 10 yedek saklanır, eskiler kendiliğinden silinir.</p>
+  </div>
+  <form method="post" action="/panel/ayarlar/yedek-yukle?_csrf=<%= encodeURIComponent(csrf) %>" enctype="multipart/form-data" class="card stack">
+    <h2 class="h2">Dışarıdan yedek yükleyin</h2>
+    <p class="muted">Daha önce indirdiğiniz <code>.db</code> uzantılı yedek dosyası. Yüklenen dosya listeye eklenir; geri yüklemek ayrı bir adımdır.</p>
+    <div class="row-btns"><label class="sr" for="bf">Yedek dosyası</label><input id="bf" type="file" name="file" accept=".db" required><button class="btn btn--ghost">Yükleyin</button></div>
+  </form>
+</div>
+<%- include('_bottom') %>

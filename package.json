@@ -1,0 +1,28 @@
+{
+  "name": "plastikbanketmasa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plastik Banket Masa kurumsal web sitesi ve yönetim paneli",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "@fontsource-variable/league-spartan": "^5.2.8",
+    "@fontsource-variable/montserrat": "^5.2.8",
+    "better-sqlite3": "^12.4.1",
+    "compression": "^1.8.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "marked": "^16.4.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^10.3.1",
+    "sanitize-html": "^2.17.0",
+    "sharp": "^0.35.5"
+  }
+}

@@ -1,0 +1,56 @@
+<body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>">
+<%- include('icons') %>
+<a class="skip" href="#icerik">İçeriğe geç</a>
+
+<div class="topbar">
+  <div class="wrap topbar__in">
+    <ul class="topbar__info">
+      <% if (contact.phone) { %><li><a href="<%= telHref(contact.phone) %>"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><%= contact.phone %></a></li><% } %>
+      <% if (contact.email) { %><li><a href="mailto:<%= contact.email %>"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg><%= contact.email %></a></li><% } %>
+      <% if (contact.hours) { %><li class="hide-sm"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><%= contact.hours %></li><% } %>
+    </ul>
+    <ul class="topbar__social" aria-label="Sosyal medya">
+      <% for (const [k, label] of [['instagram','Instagram'],['facebook','Facebook'],['linkedin','LinkedIn'],['youtube','YouTube']]) { if (social[k]) { %>
+      <li><a href="<%= social[k] %>" target="_blank" rel="noopener" aria-label="<%= label %>"><svg class="ic" aria-hidden="true"><use href="#i-<%= k %>"/></svg></a></li>
+      <% } } %>
+    </ul>
+  </div>
+</div>
+
+<header class="hdr" id="ust">
+  <div class="wrap hdr__in">
+    <a class="hdr__logo" href="/" aria-label="<%= site.name || 'Plastik Banket Masa' %> ana sayfa">
+      <% if (header.logo) { %><img src="<%= thumb(header.logo, 480) %>" alt="<%= site.name || 'Plastik Banket Masa' %>" width="240" height="68"><% } else { %><strong><%= site.name %></strong><% } %>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Ana menü">
+      <ul class="nav__list">
+        <% for (const [i, it] of menus.header.entries()) {
+             const active = it.url === path || (it.children || []).some(c => c.url === path); %>
+        <li class="nav__item<%= it.children.length ? ' has-sub' : '' %>">
+          <% if (it.children.length) { %>
+            <button class="nav__link nav__toggle<%= active ? ' is-active' : '' %>" type="button" aria-expanded="false" aria-controls="sub-<%= i %>"><%= it.label %><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></button>
+            <ul class="nav__sub" id="sub-<%= i %>">
+              <% for (const c of it.children) { %><li><a href="<%= c.url %>"<%- c.url === path ? ' aria-current="page"' : '' %>><%= c.label %></a></li><% } %>
+            </ul>
+          <% } else { %>
+            <a class="nav__link<%= active ? ' is-active' : '' %>" href="<%= it.url %>"<%- it.url === path ? ' aria-current="page"' : '' %>><%= it.label %></a>
+          <% } %>
+        </li>
+        <% } %>
+      </ul>
+      <div class="nav__mobile-contact">
+        <% if (salesPhone) { %><a class="btn btn--dark btn--block" href="<%= telHref(salesPhone) %>"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><%= salesPhone %> numarasını arayın</a><% } %>
+        <% if (wa) { %><a class="btn btn--line btn--block" href="<%= wa %>" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp’tan yazın</a><% } %>
+      </div>
+    </nav>
+
+    <div class="hdr__actions">
+      <a class="btn btn--accent hdr__cta" href="<%= header.cta_url || telHref(salesPhone) %>"><%= header.cta_text || 'Fiyat teklifi alın' %></a>
+      <button class="hdr__burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Menüyü aç">
+        <svg class="ic ic--open" aria-hidden="true"><use href="#i-menu"/></svg><svg class="ic ic--close" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main id="icerik">

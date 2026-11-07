@@ -1,0 +1,63 @@
+<%- include('_top') %>
+<%
+  // UTC -> Türkiye saati (datetime-local için)
+  const local = post.published_at ? new Date(String(post.published_at).replace(' ', 'T') + 'Z') : null;
+  const localStr = local ? new Date(local.getTime() + 3 * 3600 * 1000).toISOString().slice(0, 16) : '';
+%>
+<form method="post" action="/panel/blog/<%= post.id %>" class="editor" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead">
+    <div>
+      <p class="crumb"><a href="/panel/blog">Blog</a> /</p>
+      <h1 class="h1"><%= post.id ? 'Yazıyı düzenleyin' : 'Yeni yazı' %></h1>
+      <% if (post.id) { %><p class="muted">Adres: <a class="mono" href="/<%= post.slug %>" target="_blank" rel="noopener">/<%= post.slug %></a><%= post.status === 'draft' ? ' (taslak önizleme yalnızca size görünür)' : '' %></p><% } %>
+    </div>
+    <div class="row-btns">
+      <% if (post.id) { %><a class="btn btn--ghost" href="/<%= post.slug %>" target="_blank" rel="noopener">Yazıyı görüntüleyin</a><% } %>
+      <button class="btn btn--primary" type="submit">Kaydedin</button>
+    </div>
+  </div>
+  <div class="editor__grid">
+    <div class="editor__main">
+      <div class="card">
+        <div class="field"><label class="label" for="title">Başlık</label><input id="title" name="title" type="text" value="<%= post.title %>" required data-slug-src class="input--lg"></div>
+        <div class="field"><label class="label" for="excerpt">Kısa özet</label><textarea id="excerpt" name="excerpt" rows="2" maxlength="400"><%= post.excerpt %></textarea><p class="hint">Blog listesinde başlığın altında görünür.</p></div>
+        <%- include('_field', { f: { key: 'body', label: 'Yazı', type: 'markdown', rows: 22 }, name: 'body', value: post.body, idp: 'p' }) %>
+      </div>
+    </div>
+    <aside class="editor__side">
+      <div class="card">
+        <h2 class="h3">Yayın</h2>
+        <div class="field">
+          <label class="label" for="status">Durum</label>
+          <select id="status" name="status">
+            <option value="published"<%= post.status === 'published' ? ' selected' : '' %>>Yayında</option>
+            <option value="draft"<%= post.status !== 'published' ? ' selected' : '' %>>Taslak</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="published_at">Yayın tarihi</label>
+          <input id="published_at" name="published_at" type="datetime-local" value="<%= localStr %>">
+          <p class="hint">İleri bir tarih seçerseniz yazı o gün yayına girer. Boşsa kaydettiğiniz an.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="category_id">Kategori</label>
+          <select id="category_id" name="category_id">
+            <option value="">Kategorisiz</option>
+            <% for (const c of cats) { %><option value="<%= c.id %>"<%= post.category_id === c.id ? ' selected' : '' %>><%= c.name %></option><% } %>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="slug">Adres</label>
+          <div class="prefix"><span>/</span><input id="slug" name="slug" type="text" value="<%= post.slug %>" spellcheck="false" data-slug-dst<%= post.id ? '' : ' data-auto' %>></div>
+        </div>
+      </div>
+      <div class="card">
+        <%- include('_field', { f: { key: 'cover', label: 'Kapak görseli', type: 'image' }, name: 'cover', value: post.cover, idp: 'p' }) %>
+      </div>
+      <%- include('_seo-box', { seoTitle: post.seo_title, seoDesc: post.seo_desc, fallbackTitle: post.title || 'Yazı başlığı', url: '/' + (post.slug || ''), prefix: '' }) %>
+    </aside>
+  </div>
+  <div class="savebar"><span class="savebar__msg">Kaydedilmemiş değişiklikler var.</span><button class="btn btn--primary" type="submit">Kaydedin</button></div>
+</form>
+<%- include('_bottom') %>

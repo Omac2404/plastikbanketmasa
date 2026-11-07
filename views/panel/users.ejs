@@ -1,0 +1,35 @@
+<%- include('_top') %>
+<div class="pagehead"><div><h1 class="h1">Kullanıcılar</h1><p class="muted"><%= users.length %> hesap. Editör içerik düzenler; yönetici ayrıca menü, SEO ve ayarlara erişir; süper admin kullanıcıları ve yedekleri yönetir.</p></div></div>
+<div class="grid2 grid2--wide">
+  <div class="card card--flush">
+    <table class="table">
+      <thead><tr><th>Kullanıcı</th><th>Rol</th><th>Durum</th><th>Son giriş</th><th><span class="sr">İşlem</span></th></tr></thead>
+      <tbody>
+        <% for (const u of users) { %>
+        <tr<%- edit && edit.id === u.id ? ' class="is-sel"' : '' %>>
+          <td><strong><%= u.name %></strong><br><span class="muted small"><%= u.email %><%= u.username ? ' · ' + u.username : '' %></span></td>
+          <td><%= ROLES[u.role].label %></td>
+          <td><span class="pill pill--<%= u.active ? 'published' : 'draft' %>"><%= u.active ? 'etkin' : 'kapalı' %></span></td>
+          <td class="muted"><%= u.last_login ? timeAgo(u.last_login) : '—' %></td>
+          <td class="right nowrap"><a class="btn btn--ghost btn--sm" href="/panel/kullanicilar/<%= u.id %>">Düzenleyin</a>
+            <% if (u.id !== user.id) { %><form class="inline" method="post" action="/panel/kullanicilar/<%= u.id %>/sil"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--text btn--sm btn--danger-text" data-confirm="<%= u.name %> silinsin mi?">Silin</button></form><% } %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <% const e = edit || { id: 0, name: '', email: '', username: '', role: 'editor', active: 1 }; %>
+  <form method="post" action="/panel/kullanicilar/<%= e.id %>" class="card stack" autocomplete="off">
+    <h2 class="h3"><%= e.id ? e.name + ' hesabını düzenleyin' : 'Yeni kullanıcı' %></h2>
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <div class="field"><label class="label" for="un">Ad</label><input id="un" name="name" value="<%= e.name %>" required></div>
+    <div class="field"><label class="label" for="ue">E-posta</label><input id="ue" name="email" type="email" value="<%= e.email %>" required></div>
+    <div class="field"><label class="label" for="uu">Kullanıcı adı <span class="muted">(isteğe bağlı)</span></label><input id="uu" name="username" value="<%= e.username || '' %>" spellcheck="false"><p class="hint">Girilirse e-posta yerine bununla da giriş yapılabilir.</p></div>
+    <div class="field"><label class="label" for="up"><%= e.id ? 'Yeni parola (değiştirmeyecekseniz boş bırakın)' : 'Parola' %></label><input id="up" name="password" type="password" autocomplete="new-password" minlength="8"<%= e.id ? '' : ' required' %>><p class="hint">En az 8 karakter.</p></div>
+    <div class="field"><label class="label" for="ur">Rol</label>
+      <select id="ur" name="role"<%= e.id === user.id ? ' disabled' : '' %>><% for (const [k, r] of Object.entries(ROLES)) { %><option value="<%= k %>"<%= e.role === k ? ' selected' : '' %>><%= r.label %></option><% } %></select></div>
+    <% if (e.id && e.id !== user.id) { %><label class="switch"><input type="checkbox" name="active" value="1"<%= e.active ? ' checked' : '' %>><span>Hesap etkin</span></label><% } %>
+    <div class="row-btns"><button class="btn btn--primary"><%= e.id ? 'Kaydedin' : 'Kullanıcı ekleyin' %></button><% if (e.id) { %><a class="btn btn--text" href="/panel/kullanicilar">Vazgeçin</a><% } %></div>
+  </form>
+</div>
+<%- include('_bottom') %>

@@ -1,0 +1,57 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-contact' }) %>
+<% const it = d.intro || {}, ch = d.channels || {}, f = d.form || {}; %>
+
+<section class="pagehead">
+  <div class="wrap">
+    <%- include('../partials/crumbs', { crumbs: [{ label: page.title }] }) %>
+    <h1 class="pagehead__title"><%= it.title || page.title %></h1>
+    <% if (it.text) { %><p class="pagehead__lead"><%= it.text %></p><% } %>
+  </div>
+</section>
+
+<section class="sec sec--tight">
+  <div class="wrap">
+    <ul class="channels">
+      <% if (contact.email) { %>
+      <li class="channel">
+        <svg class="ic channel__ic" aria-hidden="true"><use href="#i-mail"/></svg>
+        <h2 class="channel__t"><%= ch.mail_title || 'E-posta' %></h2>
+        <p><%= ch.mail_text %></p>
+        <a class="channel__link" href="mailto:<%= contact.email %>"><%= contact.email %></a>
+      </li>
+      <% } %>
+      <li class="channel">
+        <svg class="ic channel__ic" aria-hidden="true"><use href="#i-phone"/></svg>
+        <h2 class="channel__t"><%= ch.phone_title || 'Telefon' %></h2>
+        <p><%= ch.phone_text %></p>
+        <% if (contact.phone) { %><a class="channel__link" href="<%= telHref(contact.phone) %>"><%= contact.phone %></a><% } %>
+        <% if (contact.phone_sales && contact.phone_sales !== contact.phone) { %><a class="channel__link" href="<%= telHref(contact.phone_sales) %>"><%= contact.phone_sales %> <small>satış</small></a><% } %>
+      </li>
+      <li class="channel">
+        <svg class="ic channel__ic" aria-hidden="true"><use href="#i-instagram"/></svg>
+        <h2 class="channel__t"><%= ch.social_title || 'Sosyal medya' %></h2>
+        <p><%= ch.social_text %></p>
+        <span class="channel__social">
+          <% for (const [k, label] of [['instagram','Instagram'],['youtube','YouTube'],['facebook','Facebook'],['linkedin','LinkedIn']]) { if (social[k]) { %>
+            <a href="<%= social[k] %>" target="_blank" rel="noopener"><%= label %></a>
+          <% } } %>
+        </span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec contactblock" id="form">
+  <div class="wrap contactblock__grid">
+    <div class="contactblock__copy">
+      <h2 class="sec__title"><%= f.title || 'Mesaj bırakın' %></h2>
+      <% if (f.text) { %><p class="lead-p"><%= f.text %></p><% } %>
+      <% if (contact.address) { %><address class="addr"><%- escapeHtml(contact.address).replace(/\n/g, '<br>') %></address><% } %>
+      <%- include('../partials/map') %>
+    </div>
+    <div class="contactblock__form"><%- include('../partials/contact-form', { formId: 'c' }) %></div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

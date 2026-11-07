@@ -1,0 +1,67 @@
+<%- include('_top') %>
+<div class="pagehead">
+  <div>
+    <h1 class="h1">İyi günler, <%= user.name.split(' ')[0] %></h1>
+    <p class="muted">Sitede ne var ne yok, buradan.</p>
+  </div>
+  <a class="btn btn--ghost" href="/" target="_blank" rel="noopener">Siteyi açın</a>
+</div>
+
+<% if (!smtpOk && can('admin')) { %>
+<div class="alert alert--warn">Form bildirimleri e-postayla gelmiyor çünkü e-posta (SMTP) ayarlanmamış. Başvurular yine de burada birikir. <a href="/panel/ayarlar/eposta">E-posta ayarlarını yapın</a></div>
+<% } %>
+
+<ul class="kpis">
+  <li><a href="/panel/formlar?f=okunmamis"><strong><%= unread %></strong><span>Okunmamış başvuru</span></a></li>
+  <li><a href="/panel/urunler"><strong><%= stats.products %></strong><span>Yayındaki ürün</span></a></li>
+  <li><a href="/panel/sayfalar"><strong><%= stats.pages %></strong><span>Sayfa</span></a></li>
+  <li><a href="/panel/blog"><strong><%= stats.posts %></strong><span>Blog yazısı<% if (stats.drafts) { %> · <%= stats.drafts %> taslak<% } %></span></a></li>
+  <li><a href="/panel/medya"><strong><%= stats.media %></strong><span>Medya dosyası</span></a></li>
+</ul>
+
+<div class="grid2">
+  <section class="card">
+    <div class="card__head"><h2 class="h2">Son başvurular</h2><a href="/panel/formlar">Tümü</a></div>
+    <% if (!subs.length) { %><p class="muted">Henüz form başvurusu yok.</p><% } %>
+    <ul class="rows">
+      <% for (const s of subs) { %>
+      <li class="<%= s.is_read ? '' : 'is-unread' %>">
+        <a href="/panel/formlar#s<%= s.id %>">
+          <strong><%= s.d.ad %></strong> <span class="muted"><%= s.d.telefon %></span>
+          <span class="rows__sub"><%= clip(s.d.mesaj || s.d.konu || '(mesaj yok)', 90) %></span>
+        </a>
+        <time class="muted"><%= timeAgo(s.created_at) %></time>
+      </li>
+      <% } %>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card__head"><h2 class="h2">Hızlı işlemler</h2></div>
+    <div class="quick">
+      <a href="/panel/sayfalar">Ana sayfa metinlerini düzenleyin</a>
+      <a href="/panel/urunler">Ürün bilgisi ve görsellerini güncelleyin</a>
+      <a href="/panel/alanlar">Telefon, adres ve sosyal medyayı değiştirin</a>
+      <a href="/panel/blog/yeni">Yeni blog yazısı yazın</a>
+      <a href="/panel/medya">Görsel yükleyin</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card__head"><h2 class="h2">Son düzenlenenler</h2></div>
+    <table class="table">
+      <thead><tr><th>Kayıt</th><th>Tür</th><th>Güncelleme</th></tr></thead>
+      <tbody>
+        <% for (const r of recent) { %><tr><td><a href="<%= r.url %>"><%= r.title %></a></td><td><%= r.kind %></td><td class="muted"><%= timeAgo(r.updated_at) %></td></tr><% } %>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <div class="card__head"><h2 class="h2">Son aktivite</h2><% if (can('admin')) { %><a href="/panel/aktivite">Tümü</a><% } %></div>
+    <ul class="rows rows--compact">
+      <% for (const a of activity) { %><li><span><strong><%= a.user_name %></strong> <%= a.action.toLocaleLowerCase('tr') %><% if (a.target) { %>: <%= a.target %><% } %></span><time class="muted"><%= timeAgo(a.created_at) %></time></li><% } %>
+    </ul>
+  </section>
+</div>
+<%- include('_bottom') %>

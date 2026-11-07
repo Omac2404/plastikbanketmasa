@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title><%= site.name || 'Plastik Banket Masa' %></title>
+<link rel="stylesheet" href="/assets/css/site.css?v=<%= assetVersion %>">
+</head>
+<body class="maint">
+  <main class="maint__box">
+    <% if (header.logo) { %><img src="<%= thumb(header.logo, 480) %>" alt="<%= site.name %>" width="240" height="68"><% } %>
+    <h1>Kısa bir aradayız</h1>
+    <p><%= site.maintenance_text || 'Sitemiz bakımda. Kısa süre içinde tekrar yayında olacağız.' %></p>
+    <% if (contact.phone) { %><p><a class="btn btn--dark" href="<%= telHref(contact.phone) %>"><%= contact.phone %></a></p><% } %>
+  </main>
+</body>
+</html>

@@ -1,0 +1,78 @@
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr__grid">
+    <div class="ftr__brand">
+      <% if (footer.logo) { %><img src="<%= thumb(footer.logo, 480) %>" alt="<%= site.name %>" width="220" height="62" loading="lazy"><% } %>
+      <% if (footer.about) { %><p><%= footer.about %></p><% } %>
+      <ul class="ftr__social" aria-label="Sosyal medya">
+        <% for (const [k, label] of [['instagram','Instagram'],['facebook','Facebook'],['linkedin','LinkedIn'],['youtube','YouTube']]) { if (social[k]) { %>
+        <li><a href="<%= social[k] %>" target="_blank" rel="noopener" aria-label="<%= label %>"><svg class="ic" aria-hidden="true"><use href="#i-<%= k %>"/></svg></a></li>
+        <% } } %>
+      </ul>
+    </div>
+    <nav class="ftr__col" aria-label="Ürünler">
+      <h2 class="ftr__h">Ürünler</h2>
+      <ul><% for (const it of menus.footer_products) { %><li><a href="<%= it.url %>"><%= it.label %></a></li><% } %></ul>
+    </nav>
+    <nav class="ftr__col" aria-label="Kurumsal">
+      <h2 class="ftr__h">Kurumsal</h2>
+      <ul><% for (const it of menus.footer_company) { %><li><a href="<%= it.url %>"><%= it.label %></a></li><% } %></ul>
+    </nav>
+    <div class="ftr__col">
+      <h2 class="ftr__h">İletişim</h2>
+      <ul class="ftr__contact">
+        <% if (contact.phone) { %><li><a href="<%= telHref(contact.phone) %>"><%= contact.phone %></a></li><% } %>
+        <% if (contact.phone_sales && contact.phone_sales !== contact.phone) { %><li><a href="<%= telHref(contact.phone_sales) %>"><%= contact.phone_sales %></a> <span class="ftr__note">satış</span></li><% } %>
+        <% if (contact.email) { %><li><a href="mailto:<%= contact.email %>"><%= contact.email %></a></li><% } %>
+        <% if (contact.address) { %><li><address><%- escapeHtml(contact.address).replace(/\n/g, '<br>') %></address></li><% } %>
+        <% if (contact.hours) { %><li class="ftr__note"><%= contact.hours %></li><% } %>
+      </ul>
+    </div>
+  </div>
+  <div class="ftr__bottom">
+    <div class="wrap ftr__bottom-in">
+      <p>© <%= year %> <%= footer.company || site.name %>. Tüm hakları saklıdır.</p>
+      <ul>
+        <% for (const it of menus.legal) { %><li><a href="<%= it.url %>"><%= it.label %></a></li><% } %>
+        <li><button type="button" class="linklike" data-cookie-open>Çerez tercihleri</button></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<%
+  const fl = (widgets.floating || {}); const mb = (widgets.mobilebar || {});
+  const resolve = (it) => it.url || (it.icon === 'whatsapp' ? wa : it.icon === 'phone' ? telHref(salesPhone) : it.icon === 'mail' ? 'mailto:' + contact.email : '#');
+  const ext = (u) => /^https?:/.test(u);
+%>
+<% if (fl.enabled && (fl.items || []).length) { %>
+<div class="fab fab--<%= fl.position === 'left' ? 'left' : 'right' %><%= mb.enabled ? ' fab--has-bar' : '' %>">
+  <% for (const it of fl.items) { const u = resolve(it); if (!u || u === '#') continue; %>
+  <a class="fab__btn fab__btn--<%= it.icon %> vis-<%= it.visibility || 'all' %>" href="<%= u %>"<%- ext(u) ? ' target="_blank" rel="noopener"' : '' %> aria-label="<%= it.label %>">
+    <svg class="ic" aria-hidden="true"><use href="#i-<%= it.icon %>"/></svg><span class="fab__label"><%= it.label %></span>
+  </a>
+  <% } %>
+</div>
+<% } %>
+<% if (mb.enabled && (mb.items || []).length) { %>
+<nav class="mbar" aria-label="Hızlı iletişim">
+  <% for (const it of mb.items.slice(0, 5)) { const u = resolve(it); if (!u || u === '#') continue; %>
+  <a href="<%= u %>"<%- ext(u) ? ' target="_blank" rel="noopener"' : '' %>><svg class="ic" aria-hidden="true"><use href="#i-<%= it.icon %>"/></svg><span><%= it.label %></span></a>
+  <% } %>
+</nav>
+<% } %>
+
+<div class="cookie" id="cookie" role="dialog" aria-modal="false" aria-labelledby="cookie-t" hidden>
+  <div class="cookie__in">
+    <p id="cookie-t"><strong>Çerez kullanımı.</strong> Ziyaret istatistikleri için analiz çerezleri kullanmak istiyoruz. Siz onay vermeden yüklenmezler. Ayrıntılar <a href="/cerez-politikasi">Çerez Politikası</a>’nda.</p>
+    <div class="cookie__btns">
+      <button type="button" class="btn btn--line btn--sm" data-cookie="reject">Yalnızca zorunlu</button>
+      <button type="button" class="btn btn--dark btn--sm" data-cookie="accept">Kabul et</button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/site.js?v=<%= assetVersion %>" defer></script>
+</body>
+</html>

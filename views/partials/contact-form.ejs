@@ -1,0 +1,44 @@
+<%
+  const st = typeof formState !== 'undefined' ? formState : '';
+  const fid = typeof formId !== 'undefined' ? formId : 'f';
+  const subject = typeof formSubject !== 'undefined' ? formSubject : '';
+%>
+<form class="cform" action="/iletisim/gonder" method="post" novalidate data-ajax>
+  <input type="hidden" name="_back" value="<%= path %>">
+  <% if (subject) { %><input type="hidden" name="konu" value="<%= subject %>"><% } %>
+  <div class="hp" aria-hidden="true"><label>Web sitesi <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+  <div class="cform__row">
+    <div class="field">
+      <label for="<%= fid %>-ad">Adınız soyadınız</label>
+      <input id="<%= fid %>-ad" name="ad" type="text" autocomplete="name" required minlength="2" maxlength="120" aria-describedby="<%= fid %>-ad-e">
+      <p class="field__err" id="<%= fid %>-ad-e" hidden></p>
+    </div>
+    <div class="field">
+      <label for="<%= fid %>-tel">Telefon</label>
+      <input id="<%= fid %>-tel" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="05xx xxx xx xx" aria-describedby="<%= fid %>-tel-e">
+      <p class="field__err" id="<%= fid %>-tel-e" hidden></p>
+    </div>
+  </div>
+  <div class="field">
+    <label for="<%= fid %>-mail">E-posta <span class="field__opt">(isteğe bağlı)</span></label>
+    <input id="<%= fid %>-mail" name="eposta" type="email" autocomplete="email" maxlength="160" aria-describedby="<%= fid %>-mail-e">
+    <p class="field__err" id="<%= fid %>-mail-e" hidden></p>
+  </div>
+  <div class="field">
+    <label for="<%= fid %>-msg">Mesajınız <span class="field__opt">(isteğe bağlı)</span></label>
+    <textarea id="<%= fid %>-msg" name="mesaj" rows="4" maxlength="3000" placeholder="Örn: 50 adet yuvarlak plastik banket masa, teslim yeri İzmir"></textarea>
+  </div>
+  <div class="field field--check">
+    <input id="<%= fid %>-kvkk" name="kvkk" type="checkbox" value="1" required aria-describedby="<%= fid %>-kvkk-e">
+    <label for="<%= fid %>-kvkk"><a href="/kvkk-aydinlatma-metni" target="_blank">KVKK Aydınlatma Metni</a>’ni okudum, bilgilerimin bu talep için kullanılmasını onaylıyorum.</label>
+    <p class="field__err" id="<%= fid %>-kvkk-e" hidden></p>
+  </div>
+
+  <div class="cform__foot">
+    <button class="btn btn--dark" type="submit">Mesajı gönderin<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    <p class="cform__status" role="status" aria-live="polite"><%
+      if (st === 'tamam') { %><span class="ok">Mesajınız bize ulaştı. En kısa sürede dönüş yapacağız.</span><% }
+      else if (st === 'hata') { %><span class="bad">Mesaj gönderilemedi. Alanları kontrol edip tekrar deneyin ya da bizi arayın.</span><% } %></p>
+  </div>
+</form>

@@ -1,0 +1,32 @@
+<%- include('_top') %>
+<div class="pagehead"><div><h1 class="h1">E-posta</h1><p class="muted">Form bildirimleri bu hesaptan gönderilir.</p></div></div>
+<div class="narrow">
+  <form method="post" class="card stack" autocomplete="off" data-dirty-guard>
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <div class="card__head"><h2 class="h2">SMTP ayarları</h2><span class="pill pill--<%= smtp.host && smtp.user && smtp.pass ? 'published' : 'draft' %>"><%= smtp.host && smtp.user && smtp.pass ? 'yapılandırıldı' : 'ayarlanmadı' %></span></div>
+    <div class="grid2 grid2--tight">
+      <div class="field"><label class="label" for="h">Sunucu</label><input id="h" name="host" value="<%= smtp.host || '' %>" placeholder="örn: smtp.yandex.com" spellcheck="false"></div>
+      <div class="field"><label class="label" for="p">Port</label><input id="p" name="port" value="<%= smtp.port || '' %>" placeholder="587 veya 465"></div>
+    </div>
+    <label class="switch"><input type="checkbox" name="secure" value="1"<%= smtp.secure ? ' checked' : '' %>><span>SSL (465 portu için açın, 587 için kapalı kalmalı)</span></label>
+    <div class="grid2 grid2--tight">
+      <div class="field"><label class="label" for="u">Kullanıcı</label><input id="u" name="user" value="<%= smtp.user || '' %>" autocomplete="off" spellcheck="false"></div>
+      <div class="field"><label class="label" for="pw">Parola</label><input id="pw" name="pass" type="password" autocomplete="new-password" placeholder="<%= smtp.pass ? '•••••• (kayıtlı, değiştirmek için yazın)' : '' %>"><p class="hint">Uygulama parolası önerilir.</p></div>
+      <div class="field"><label class="label" for="fr">Gönderen adresi</label><input id="fr" name="from" value="<%= smtp.from || '' %>" placeholder="örn: site@plastikbanketmasa.com"></div>
+      <div class="field"><label class="label" for="fn">Gönderen adı</label><input id="fn" name="from_name" value="<%= smtp.from_name || '' %>" placeholder="Plastik Banket Masa"></div>
+    </div>
+    <button class="btn btn--primary">E-posta ayarlarını kaydedin</button>
+  </form>
+  <form method="post" action="/panel/ayarlar/eposta/test" class="card stack">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <h2 class="h2">Test gönderimi</h2>
+    <div class="row-btns"><label class="sr" for="tt">Alıcı</label><input id="tt" name="to" type="email" value="<%= user.email %>"><button class="btn btn--ghost">Test e-postası gönderin</button></div>
+  </form>
+  <div class="card card--flush">
+    <table class="table"><thead><tr><th>Alıcı</th><th>Konu</th><th>Durum</th><th>Tarih</th></tr></thead>
+      <tbody><% if (!log.length) { %><tr><td colspan="4" class="muted">Henüz gönderim yok.</td></tr><% } %>
+      <% for (const l of log) { %><tr><td><%= l.recipient %></td><td><%= l.subject %></td><td><span class="pill pill--<%= l.status === 'gitti' ? 'published' : 'error' %>" title="<%= l.error || '' %>"><%= l.status %></span></td><td class="muted"><%= timeAgo(l.created_at) %></td></tr><% } %></tbody>
+    </table>
+  </div>
+</div>
+<%- include('_bottom') %>

@@ -1,0 +1,13 @@
+<%- include('_top') %>
+<form method="post" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead">
+    <div><h1 class="h1">Ortak alanlar</h1><p class="muted">Sitenin her sayfasında görünen bilgiler: telefon, adres, logo, sosyal medya ve footer.</p></div>
+    <button class="btn btn--primary" type="submit">Kaydedin</button>
+  </div>
+  <div class="narrow">
+    <%- include('_sections', { schema, data, openCount: 1 }) %>
+  </div>
+  <div class="savebar"><span class="savebar__msg">Kaydedilmemiş değişiklikler var.</span><button class="btn btn--primary" type="submit">Kaydedin</button></div>
+</form>
+<%- include('_bottom') %>

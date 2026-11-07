@@ -1,0 +1,123 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-product' }) %>
+<% const m = d.main || {}, hl = d.highlights || {}, colors = ((d.colors || {}).items || []).filter(c => c.image),
+   gal = ((d.gallery || {}).images || []).filter(Boolean), su = d.setup || {}, cta = d.cta || {};
+   const phone = m.phone || salesPhone;
+   const crumbs = product.category === 'sandalye' ? [{ label: 'Plastik Sandalye', url: '/plastik-sandalye' }, { label: product.title }] : [{ label: product.title }]; %>
+
+<section class="phero">
+  <div class="wrap">
+    <%- include('../partials/crumbs', { crumbs }) %>
+    <div class="phero__grid">
+      <div class="phero__copy">
+        <h1 class="phero__title"><%= product.title %></h1>
+        <% if (m.lead) { %><p class="phero__lead"><%= m.lead %></p><% } %>
+        <% if ((hl.items || []).length) { %>
+        <ul class="hl">
+          <% for (const it of hl.items) { %><li><svg class="hl__ic" aria-hidden="true"><use href="#h-<%= it.icon || 'kalite' %>"/></svg><span><%= it.title %></span></li><% } %>
+        </ul>
+        <% } %>
+        <div class="phero__btns">
+          <% if (phone) { %><a class="btn btn--dark btn--lg" href="<%= telHref(phone) %>"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><%= phone %> numarasını arayın</a><% } %>
+          <a class="btn btn--line btn--lg" href="#form">Fiyat teklifi isteyin</a>
+        </div>
+      </div>
+      <div class="phero__media">
+        <%- img(m.cover, { alt: product.title, sizes: '(min-width: 1000px) 560px, 100vw', eager: true }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec pdetail">
+  <div class="wrap pdetail__grid">
+    <div class="prose"><%- md(m.body) %></div>
+    <aside class="pdetail__side">
+      <% if ((hl.specs || []).length) { %>
+        <h2 class="side__h">Teknik bilgiler</h2>
+        <dl class="specs"><% for (const s of hl.specs) { %><div><dt><%= s.label %></dt><dd><%= s.value %></dd></div><% } %></dl>
+      <% } %>
+      <% if ((hl.features || []).length) { %>
+        <h2 class="side__h">Neden bu ürün?</h2>
+        <ul class="ticks"><% for (const f of hl.features) { %><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><%= f.text %></li><% } %></ul>
+      <% } %>
+    </aside>
+  </div>
+</section>
+
+<% if (colors.length) { %>
+<section class="sec sec--sand colors">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 class="sec__title">Renk seçenekleri</h2>
+      <p class="sec__lead"><%= colors.length %> renk seçeneği mevcut. Sipariş için iletişime geçebilirsiniz.</p>
+    </div>
+    <ul class="swatches">
+      <% for (const c of colors) { %>
+      <li><button type="button" class="swatch" data-lightbox="<%= c.image %>" data-caption="<%= product.title %>, <%= c.name %>">
+        <%- img(c.image, { alt: c.name + ' ' + product.title, sizes: '(min-width: 900px) 220px, 45vw' }) %><span><%= c.name %></span>
+      </button></li>
+      <% } %>
+    </ul>
+  </div>
+</section>
+<% } %>
+
+<% if (gal.length) { %>
+<section class="sec gallery">
+  <div class="wrap">
+    <h2 class="sec__title">Ürün galerisi</h2>
+    <ul class="gal gal--<%= Math.min(gal.length, 4) %>">
+      <% gal.forEach((g, i) => { %>
+      <li><button type="button" class="gal__btn" data-lightbox="<%= g %>" data-caption="<%= product.title %> görsel <%= i + 1 %>" aria-label="<%= product.title %> görsel <%= i + 1 %>, büyütün">
+        <%- img(g, { sizes: '(min-width: 1000px) 400px, 50vw' }) %>
+      </button></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+<% } %>
+
+<% if (su.title || youtubeId(su.youtube)) { %>
+<section class="sec sec--ink setup" id="kurulum">
+  <div class="wrap">
+    <h2 class="sec__title"><%= su.title || 'Kurulum' %></h2>
+    <div class="setup__grid">
+      <div>
+        <% if (su.image) { %><div class="setup__img"><%- img(su.image, { sizes: '(min-width: 1000px) 560px, 100vw' }) %></div><% } %>
+        <% if ((su.items || []).length) { %><ul class="ticks ticks--light"><% for (const s of su.items) { %><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><%= s.text %></li><% } %></ul><% } %>
+      </div>
+      <%- include('../partials/youtube', { ytUrl: su.youtube, ytTitle: product.title + ' kurulum videosu', ytPoster: '' }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="sec pcta" id="form">
+  <div class="wrap pcta__grid">
+    <div>
+      <h2 class="sec__title">Fiyat teklifi alın</h2>
+      <% if (cta.text) { %><p class="lead-p"><%= cta.text %></p><% } %>
+      <% if (phone) { %><a class="bigphone" href="<%= telHref(phone) %>"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><%= phone %></a><% } %>
+      <% if (wa) { %><p><a class="link-arrow" href="<%= wa %>" target="_blank" rel="noopener">WhatsApp’tan yazın<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></p><% } %>
+    </div>
+    <div class="pcta__form"><%- include('../partials/contact-form', { formId: 'p', formSubject: product.title }) %></div>
+  </div>
+</section>
+
+<% if (others.length) { %>
+<section class="sec sec--sand">
+  <div class="wrap">
+    <h2 class="sec__title">Diğer ürünlerimiz</h2>
+    <div class="pgrid pgrid--3"><% for (const p of others.slice(0, 3)) { %><%- include('../partials/product-card', { p }) %><% } %></div>
+  </div>
+</section>
+<% } %>
+
+<dialog class="lb" id="lightbox" aria-label="Görsel önizleme">
+  <form method="dialog"><button class="lb__close" aria-label="Kapat"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button></form>
+  <img alt="">
+  <p class="lb__cap"></p>
+</dialog>
+
+<%- include('../partials/footer') %>

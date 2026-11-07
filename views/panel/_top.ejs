@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title><%= title %> · <%= site.panel_name || 'Panel' %></title>
+<link rel="stylesheet" href="/assets/css/panel.css?v=<%= assetVersion %>">
+<style>:root { --accent: <%= accent %>; }</style>
+<meta name="csrf" content="<%= csrf %>">
+</head>
+<body>
+<%- include('../partials/icons') %>
+<%
+  const nav = [
+    { h: null, items: [ { url: '/panel', label: 'Gösterge paneli', exact: true } ] },
+    { h: 'İçerik', items: [
+      { url: '/panel/sayfalar', label: 'Sayfalar' },
+      { url: '/panel/urunler', label: 'Ürünler' },
+      { url: '/panel/alanlar', label: 'Ortak alanlar' },
+      { url: '/panel/blog', label: 'Blog yazıları', exclude: '/panel/blog/kategoriler' },
+      { url: '/panel/blog/kategoriler', label: 'Kategoriler', sub: true },
+      { url: '/panel/medya', label: 'Medya' },
+      { url: '/panel/formlar', label: 'Form başvuruları', badge: unread },
+    ] },
+    { h: 'Site', min: 'admin', items: [
+      { url: '/panel/menuler', label: 'Menüler' },
+      { url: '/panel/ogeler', label: 'Site öğeleri' },
+      { url: '/panel/seo', label: 'SEO' },
+    ] },
+    { h: 'Yönetim', min: 'admin', items: [
+      { url: '/panel/ayarlar', label: 'Genel ayarlar', exact: true },
+      { url: '/panel/ayarlar/eposta', label: 'E-posta' },
+      { url: '/panel/ayarlar/yedek', label: 'Yedekleme', min: 'superadmin' },
+      { url: '/panel/kullanicilar', label: 'Kullanıcılar', min: 'superadmin' },
+      { url: '/panel/aktivite', label: 'Aktivite' },
+    ] },
+  ];
+  const isOn = (it) => it.exact ? current === it.url : (current === it.url || (current.startsWith(it.url + '/') && !(it.exclude && current.startsWith(it.exclude))));
+%>
+<div class="shell">
+  <aside class="side" id="side">
+    <a class="side__brand" href="/panel">
+      <span class="side__mark" aria-hidden="true">P</span>
+      <span><strong><%= site.name || 'Plastik Banket Masa' %></strong><small>Yönetim paneli</small></span>
+    </a>
+    <nav aria-label="Panel menüsü">
+      <% for (const g of nav) { if (g.min && !can(g.min)) continue; %>
+        <% if (g.h) { %><p class="side__h"><%= g.h %></p><% } %>
+        <ul>
+          <% for (const it of g.items) { if (it.min && !can(it.min)) continue; %>
+          <li><a class="side__link<%= it.sub ? ' side__link--sub' : '' %><%= isOn(it) ? ' is-on' : '' %>" href="<%= it.url %>"<%- isOn(it) ? ' aria-current="page"' : '' %>><%= it.label %><% if (it.badge) { %><span class="badge" aria-label="<%= it.badge %> okunmamış"><%= it.badge %></span><% } %></a></li>
+          <% } %>
+        </ul>
+      <% } %>
+    </nav>
+    <a class="side__site" href="/" target="_blank" rel="noopener">Siteyi yeni sekmede açın<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </aside>
+  <div class="main">
+    <header class="bar">
+      <button class="bar__menu" type="button" aria-controls="side" aria-expanded="false" aria-label="Menüyü aç"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <p class="bar__title"><%= title %></p>
+      <details class="bar__user">
+        <summary><span class="avatar" aria-hidden="true"><%= (user.name || '?').charAt(0) %></span><span class="bar__name"><%= user.name %></span></summary>
+        <div class="bar__drop">
+          <p><strong><%= user.name %></strong><br><small><%= user.email %> · <%= ROLES[user.role].label %></small></p>
+          <a href="/panel/hesap">Hesabım ve parola</a>
+          <form method="post" action="/panel/cikis"><input type="hidden" name="_csrf" value="<%= csrf %>"><button type="submit">Çıkış yapın</button></form>
+        </div>
+      </details>
+    </header>
+    <main class="content" id="icerik">
+      <% if (flash) { %><div class="alert alert--ok" role="status"><%= flash %></div><% } %>
+      <% if (flashErr) { %><div class="alert alert--err" role="alert"><%= flashErr %></div><% } %>

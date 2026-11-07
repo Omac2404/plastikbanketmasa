@@ -1,0 +1,42 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-about' }) %>
+<% const it = d.intro || {}, b = d.banner || {}, pr = d.producer || {};
+   const stats = ((d.stats || {}).items || []).filter(s => s.value && String(s.value).trim()); %>
+
+<section class="pagehead">
+  <div class="wrap">
+    <%- include('../partials/crumbs', { crumbs: [{ label: page.title }] }) %>
+    <h1 class="pagehead__title"><%= it.title || page.title %></h1>
+    <% if (it.lead) { %><p class="pagehead__lead"><%= it.lead %></p><% } %>
+  </div>
+</section>
+
+<section class="sec sec--tight">
+  <div class="wrap about__grid">
+    <div class="prose prose--lg">
+      <% paragraphs(it.text).forEach((p, i) => { %><p<%- i === 0 ? ' class="dropcap"' : '' %>><%= p %></p><% }) %>
+    </div>
+    <% if (it.image) { %><figure class="about__media"><%- img(it.image, { sizes: '(min-width: 1000px) 460px, 100vw' }) %></figure><% } %>
+  </div>
+</section>
+
+<% if (stats.length) { %>
+<section class="stats" aria-label="Rakamlarla biz">
+  <div class="wrap stats__row"><% for (const s of stats) { %><div class="stat"><span class="stat__v"><%= s.value %></span><span class="stat__l"><%= s.label %></span></div><% } %></div>
+</section>
+<% } %>
+
+<% if (b.image) { %><div class="widebanner"><%- img(b.image, { alt: b.alt || '', sizes: '100vw' }) %></div><% } %>
+
+<section class="sec sec--sand">
+  <div class="wrap producer__grid producer__grid--rev">
+    <div class="producer__copy">
+      <h2 class="sec__title"><%= pr.title %></h2>
+      <% for (const p of paragraphs(pr.text)) { %><p class="lead-p"><%= p %></p><% } %>
+      <a class="btn btn--dark" href="/iletisim">Bizimle iletişime geçin<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <% if (pr.image) { %><figure class="about__media"><%- img(pr.image, { sizes: '(min-width: 1000px) 520px, 100vw' }) %></figure><% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

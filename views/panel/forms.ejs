@@ -1,0 +1,48 @@
+<%- include('_top') %>
+<% const LABELS = { ad: 'Ad soyad', telefon: 'Telefon', eposta: 'E-posta', konu: 'Konu', mesaj: 'Mesaj', kvkk: 'KVKK onayı' }; %>
+<div class="pagehead">
+  <div><h1 class="h1">Form başvuruları</h1><p class="muted"><%= c.total || 0 %> kayıt · <%= c.unread || 0 %> okunmamış</p></div>
+  <div class="row-btns"><a class="btn btn--ghost" href="/panel/formlar.csv">Excel için CSV indirin</a></div>
+</div>
+<nav class="tabs" aria-label="Filtre">
+  <% for (const [k, l] of [['gelen', 'Gelen kutusu'], ['okunmamis', 'Okunmamış (' + (c.unread || 0) + ')'], ['yildizli', 'Yıldızlı'], ['arsiv', 'Arşiv']]) { %>
+  <a href="/panel/formlar?f=<%= k %>"<%- f === k ? ' aria-current="page"' : '' %>><%= l %></a>
+  <% } %>
+</nav>
+<% if (!subs.length) { %><div class="card"><p class="empty">Bu görünümde başvuru yok.</p></div><% } %>
+<div class="subs">
+  <% for (const s of subs) { %>
+  <article class="card sub<%= s.is_read ? '' : ' is-unread' %>" id="s<%= s.id %>">
+    <header class="sub__head">
+      <div>
+        <h2 class="h3"><%= s.d.ad %><% if (s.starred) { %> <span class="star" aria-label="yıldızlı">★</span><% } %></h2>
+        <p class="muted small"><%= s.created_at %> UTC · <%= s.page || '' %></p>
+      </div>
+      <div class="sub__quick">
+        <% if (s.d.telefon) { %><a class="btn btn--primary btn--sm" href="<%= telHref(s.d.telefon) %>">Arayın</a><a class="btn btn--ghost btn--sm" href="<%= waHref(s.d.telefon) %>" target="_blank" rel="noopener">WhatsApp</a><% } %>
+        <% if (s.d.eposta) { %><a class="btn btn--ghost btn--sm" href="mailto:<%= s.d.eposta %>">E-posta</a><% } %>
+      </div>
+    </header>
+    <dl class="kv">
+      <% for (const [k, v] of Object.entries(s.d)) { if (!v) continue; %><div><dt><%= LABELS[k] || k %></dt><dd><%= v %></dd></div><% } %>
+    </dl>
+    <div class="sub__acts">
+      <% for (const [a, l] of [['okundu', s.is_read ? 'Okunmadı işaretleyin' : 'Okundu işaretleyin'], ['yildiz', s.starred ? 'Yıldızı kaldırın' : 'Yıldızlayın'], ['arsiv', s.archived ? 'Arşivden çıkarın' : 'Arşivleyin']]) { %>
+      <form class="inline" method="post" action="/panel/formlar/<%= s.id %>/islem"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="a" value="<%= a %>"><input type="hidden" name="f" value="<%= f %>"><button class="btn btn--text btn--sm"><%= l %></button></form>
+      <% } %>
+      <form class="inline" method="post" action="/panel/formlar/<%= s.id %>/islem"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="a" value="sil"><input type="hidden" name="f" value="<%= f %>"><button class="btn btn--text btn--sm btn--danger-text" data-confirm="Bu başvuru kalıcı olarak silinsin mi?">Silin</button></form>
+    </div>
+  </article>
+  <% } %>
+</div>
+
+<% if (can('admin')) { %>
+<form method="post" action="/panel/formlar/ayarlar" class="card narrow">
+  <h2 class="h2">Form ayarları</h2>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="field"><label class="label" for="nt">Bildirim e-postası gidecek adres</label><input id="nt" name="notify_to" type="email" value="<%= forms.notify_to || '' %>"><p class="hint">Her yeni başvuruda bu adrese e-posta gider (E-posta ayarları yapılmış olmalı).</p></div>
+  <div class="field"><label class="label" for="sm">Gönderim sonrası mesaj</label><input id="sm" name="success" value="<%= forms.success || '' %>"></div>
+  <button class="btn btn--primary">Kaydedin</button>
+</form>
+<% } %>
+<%- include('_bottom') %>

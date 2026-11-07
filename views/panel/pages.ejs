@@ -1,0 +1,23 @@
+<%- include('_top') %>
+<div class="pagehead">
+  <div><h1 class="h1">Sayfalar</h1><p class="muted">Her sayfanın metinleri, görselleri ve arama motoru bilgileri.</p></div>
+</div>
+<div class="card card--flush">
+  <table class="table">
+    <thead><tr><th>Sayfa</th><th>Adres</th><th>Bölüm</th><th>Durum</th><th>Güncelleme</th><th><span class="sr">İşlem</span></th></tr></thead>
+    <tbody>
+      <% for (const p of pages) { const sc = schemaFor(p); %>
+      <tr>
+        <td><a href="/panel/sayfalar/<%= p.id %>"><strong><%= p.title %></strong></a></td>
+        <td><a class="mono" href="/<%= p.slug %>" target="_blank" rel="noopener">/<%= p.slug %></a></td>
+        <td><%= sc ? sc.sections.length : 0 %></td>
+        <td><span class="pill pill--<%= p.status %>"><%= p.status === 'published' ? 'yayında' : 'taslak' %></span></td>
+        <td class="muted"><%= timeAgo(p.updated_at) %><% if (p.editor) { %> · <%= p.editor %><% } %></td>
+        <td class="right"><a class="btn btn--ghost btn--sm" href="/panel/sayfalar/<%= p.id %>">Düzenleyin</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<p class="hint">Ürün sayfaları <a href="/panel/urunler">Ürünler</a> bölümünden, header ve footer bilgileri <a href="/panel/alanlar">Ortak alanlar</a> bölümünden düzenlenir.</p>
+<%- include('_bottom') %>

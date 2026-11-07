@@ -1,0 +1,18 @@
+<div class="card seobox" data-seobox>
+  <h2 class="h3">Google’da görünüm</h2>
+  <div class="serp" aria-hidden="true">
+    <p class="serp__url">plastikbanketmasa.com<%= url === '/' ? '' : url %></p>
+    <p class="serp__t" data-serp-t><%= seoTitle || fallbackTitle %></p>
+    <p class="serp__d" data-serp-d><%= seoDesc %></p>
+  </div>
+  <div class="field">
+    <label class="label" for="_seo_title">Arama başlığı</label>
+    <input id="_seo_title" name="<%= typeof prefix !== 'undefined' ? prefix : '_' %>seo_title" type="text" value="<%= seoTitle %>" maxlength="90" data-count="60" placeholder="<%= fallbackTitle %>">
+    <p class="hint"><span data-counter>0</span> / 60 karakter. Boşsa sayfa adı kullanılır.</p>
+  </div>
+  <div class="field">
+    <label class="label" for="_seo_desc">Arama açıklaması</label>
+    <textarea id="_seo_desc" name="<%= typeof prefix !== 'undefined' ? prefix : '_' %>seo_desc" rows="3" maxlength="300" data-count="160"><%= seoDesc %></textarea>
+    <p class="hint"><span data-counter>0</span> / 160 karakter.</p>
+  </div>
+</div>

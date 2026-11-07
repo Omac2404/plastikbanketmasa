@@ -1,0 +1,36 @@
+<%- include('_top') %>
+<div class="pagehead"><div><p class="crumb"><a href="/panel/blog">Blog</a> /</p><h1 class="h1">Kategoriler</h1><p class="muted">Yazıları gruplamak için.</p></div></div>
+<div class="grid2 grid2--wide">
+  <div class="card card--flush">
+    <table class="table">
+      <thead><tr><th>Ad</th><th>Adres</th><th>Yazı</th><th><span class="sr">İşlem</span></th></tr></thead>
+      <tbody>
+        <% for (const c of cats) { %>
+        <tr>
+          <td><details class="inline-edit"><summary><strong><%= c.name %></strong></summary>
+            <form method="post" action="/panel/blog/kategoriler" class="stack">
+              <input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="id" value="<%= c.id %>">
+              <div class="field"><label class="label" for="n<%= c.id %>">Ad</label><input id="n<%= c.id %>" name="name" value="<%= c.name %>"></div>
+              <div class="field"><label class="label" for="s<%= c.id %>">Adres</label><input id="s<%= c.id %>" name="slug" value="<%= c.slug %>"></div>
+              <div class="field"><label class="label" for="d<%= c.id %>">Açıklama</label><textarea id="d<%= c.id %>" name="description" rows="2"><%= c.description %></textarea></div>
+              <button class="btn btn--primary btn--sm">Kaydedin</button>
+            </form></details>
+            <% if (c.description) { %><span class="muted small"><%= clip(c.description, 90) %></span><% } %></td>
+          <td class="mono">?kategori=<%= c.slug %></td>
+          <td><%= c.n %></td>
+          <td class="right"><form class="inline" method="post" action="/panel/blog/kategoriler/<%= c.id %>/sil"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--text btn--sm" data-confirm="“<%= c.name %>” kategorisi silinsin mi? Yazılar silinmez.">Silin</button></form></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <form method="post" action="/panel/blog/kategoriler" class="card stack">
+    <h2 class="h3">Yeni kategori</h2>
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <div class="field"><label class="label" for="nn">Ad</label><input id="nn" name="name" required></div>
+    <div class="field"><label class="label" for="ns">Adres <span class="muted">(boşsa addan üretilir)</span></label><input id="ns" name="slug"></div>
+    <div class="field"><label class="label" for="nd">Açıklama</label><textarea id="nd" name="description" rows="2"></textarea></div>
+    <button class="btn btn--primary">Kategori ekleyin</button>
+  </form>
+</div>
+<%- include('_bottom') %>

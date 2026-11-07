@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Giriş · <%= site.panel_name || 'Panel' %></title>
+<link rel="stylesheet" href="/assets/css/panel.css?v=<%= assetVersion %>">
+<style>:root { --accent: <%= accent %>; }</style>
+</head>
+<body class="login">
+  <main class="login__box">
+    <p class="login__brand"><span class="side__mark" aria-hidden="true">P</span><%= site.name || 'Plastik Banket Masa' %></p>
+    <h1><%= site.panel_name || 'Yönetim paneli' %></h1>
+    <p class="muted">Devam etmek için giriş yapın.</p>
+    <% if (error) { %><div class="alert alert--err" role="alert"><%= error %></div><% } %>
+    <form method="post" action="/panel/giris" class="stack">
+      <input type="hidden" name="next" value="<%= next %>">
+      <div class="field">
+        <label class="label" for="login">E-posta veya kullanıcı adı</label>
+        <input id="login" name="login" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required value="<%= login %>" autofocus>
+      </div>
+      <div class="field">
+        <label class="label" for="password">Parola</label>
+        <div class="pw">
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button type="button" class="pw__eye" aria-controls="password" aria-pressed="false">Göster</button>
+        </div>
+      </div>
+      <button class="btn btn--primary btn--block" type="submit">Giriş yapın</button>
+    </form>
+    <p class="login__foot"><a href="/">Siteye dönün</a></p>
+  </main>
+  <script>
+    document.querySelector('.pw__eye').addEventListener('click', function () {
+      var i = document.getElementById('password'); var show = i.type === 'password';
+      i.type = show ? 'text' : 'password'; this.textContent = show ? 'Gizle' : 'Göster'; this.setAttribute('aria-pressed', show);
+    });
+  </script>
+</body>
+</html>

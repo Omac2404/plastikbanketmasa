@@ -1,0 +1,8 @@
+<% if (typeof user !== 'undefined' && user) { %>
+<%- include('_top') %>
+<div class="card"><h1 class="h1"><%= title %></h1><p><%= message %></p><p><a class="btn btn--primary" href="/panel">Gösterge paneline dönün</a></p></div>
+<%- include('_bottom') %>
+<% } else { %>
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><title><%= title %></title><link rel="stylesheet" href="/assets/css/panel.css"></head>
+<body class="login"><main class="login__box"><h1><%= title %></h1><p><%= message %></p><p><a href="/panel/giris">Giriş sayfası</a></p></main></body></html>
+<% } %>

@@ -1,0 +1,14 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-legal' }) %>
+<% const c = d.content || {}; %>
+<section class="pagehead">
+  <div class="wrap wrap--text">
+    <%- include('../partials/crumbs', { crumbs: [{ label: page.title }] }) %>
+    <h1 class="pagehead__title"><%= c.title || page.title %></h1>
+    <% if (c.updated) { %><p class="postrow__meta">Son güncelleme: <%= c.updated %></p><% } %>
+  </div>
+</section>
+<section class="sec sec--tight">
+  <div class="wrap wrap--text prose"><%- md(c.body) %></div>
+</section>
+<%- include('../partials/footer') %>

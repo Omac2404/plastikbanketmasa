@@ -1,0 +1,9 @@
+<nav class="crumbs" aria-label="Sayfa yolu">
+  <ol>
+    <li><a href="/">Ana Sayfa</a></li>
+    <% for (const c of crumbs) { %>
+      <% if (c.url) { %><li><a href="<%= c.url %>"><%= c.label %></a></li><% } else { %><li aria-current="page"><%= c.label %></li><% } %>
+    <% } %>
+  </ol>
+</nav>
+<script type="application/ld+json"><%- JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ label: 'Ana Sayfa', url: '/' }, ...crumbs].map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: c.url ? siteUrl + c.url : meta.canonical })) }).replace(/</g, '\\u003c') %></script>

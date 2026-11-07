@@ -1,0 +1,64 @@
+<%- include('_top') %>
+<form method="post" action="/panel/urunler/<%= product.id %>" class="editor" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead">
+    <div>
+      <p class="crumb"><a href="/panel/urunler">Ürünler</a> /</p>
+      <h1 class="h1"><%= product.id ? product.title : 'Yeni ürün' %></h1>
+      <% if (product.id) { %><p class="muted">Adres: <a class="mono" href="/<%= product.slug %>" target="_blank" rel="noopener">/<%= product.slug %></a></p><% } %>
+    </div>
+    <div class="row-btns">
+      <% if (product.id) { %><a class="btn btn--ghost" href="/<%= product.slug %>" target="_blank" rel="noopener">Ürün sayfasını görüntüleyin</a><% } %>
+      <button class="btn btn--primary" type="submit">Kaydedin</button>
+    </div>
+  </div>
+
+  <div class="editor__grid">
+    <div class="editor__main">
+      <div class="card">
+        <div class="field">
+          <label class="label" for="_title">Ürün adı</label>
+          <input id="_title" name="_title" type="text" value="<%= product.title %>" required data-slug-src>
+        </div>
+      </div>
+      <%- include('_sections', { schema, data, openCount: 1 }) %>
+    </div>
+    <aside class="editor__side">
+      <div class="card">
+        <h2 class="h3">Yayın</h2>
+        <div class="field">
+          <label class="label" for="_status">Durum</label>
+          <select id="_status" name="_status">
+            <option value="published"<%= product.status === 'published' ? ' selected' : '' %>>Yayında</option>
+            <option value="draft"<%= product.status === 'draft' ? ' selected' : '' %>>Taslak (ziyaretçilere kapalı)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="_slug">Adres</label>
+          <div class="prefix"><span>/</span><input id="_slug" name="_slug" type="text" value="<%= product.slug %>" spellcheck="false" data-slug-dst<%= product.id ? '' : ' data-auto' %>></div>
+          <p class="hint">Yayındaki bir ürünün adresini değiştirirseniz Google’daki eski bağlantı çalışmaz.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="_category">Kategori</label>
+          <select id="_category" name="_category"><% for (const [k, l] of CATS) { %><option value="<%= k %>"<%= product.category === k ? ' selected' : '' %>><%= l %></option><% } %></select>
+          <p class="hint">"Sandalye" kategorisindekiler Plastik Sandalye sayfasında listelenir.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="_sort">Sıra</label>
+          <input id="_sort" name="_sort" type="number" value="<%= product.sort %>">
+        </div>
+      </div>
+      <%- include('_seo-box', { seoTitle: product.seo_title, seoDesc: product.seo_desc, fallbackTitle: product.title || 'Ürün adı', url: '/' + (product.slug || '') }) %>
+      <% if (product.id && can('admin')) { %>
+      <div class="card card--danger">
+        <h2 class="h3">Ürünü silin</h2>
+        <p class="hint">Silinen ürün geri getirilemez. Geçici olarak gizlemek için durumu "Taslak" yapın.</p>
+        <button class="btn btn--danger btn--sm" type="submit" form="del" data-confirm="“<%= product.title %>” kalıcı olarak silinsin mi?">Ürünü silin</button>
+      </div>
+      <% } %>
+    </aside>
+  </div>
+  <div class="savebar"><span class="savebar__msg">Kaydedilmemiş değişiklikler var.</span><button class="btn btn--primary" type="submit">Kaydedin</button></div>
+</form>
+<% if (product.id) { %><form id="del" method="post" action="/panel/urunler/<%= product.id %>/sil"><input type="hidden" name="_csrf" value="<%= csrf %>"></form><% } %>
+<%- include('_bottom') %>

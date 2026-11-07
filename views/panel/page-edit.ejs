@@ -1,0 +1,48 @@
+<%- include('_top') %>
+<form method="post" class="editor" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead">
+    <div>
+      <p class="crumb"><a href="/panel/sayfalar">Sayfalar</a> /</p>
+      <h1 class="h1"><%= page.title %></h1>
+      <p class="muted">Adres: <a class="mono" href="/<%= page.slug %>" target="_blank" rel="noopener">/<%= page.slug %></a></p>
+    </div>
+    <div class="row-btns">
+      <a class="btn btn--ghost" href="/<%= page.slug %>" target="_blank" rel="noopener">Sayfayı görüntüleyin</a>
+      <button class="btn btn--primary" type="submit">Kaydedin ve yayınlayın</button>
+    </div>
+  </div>
+
+  <div class="editor__grid">
+    <div class="editor__main">
+      <%- include('_sections', { schema, data, openCount: 2 }) %>
+    </div>
+    <aside class="editor__side">
+      <div class="card">
+        <h2 class="h3">Sayfa bilgisi</h2>
+        <div class="field">
+          <label class="label" for="_title">Panelde görünen ad</label>
+          <input id="_title" name="_title" type="text" value="<%= page.title %>">
+        </div>
+        <% if (page.key.startsWith('legal:')) { %>
+        <div class="field">
+          <label class="label" for="_slug">Adres</label>
+          <div class="prefix"><span>/</span><input id="_slug" name="_slug" type="text" value="<%= page.slug %>" spellcheck="false"></div>
+        </div>
+        <% } %>
+        <% if (page.slug !== '') { %>
+        <div class="field">
+          <label class="label" for="_status">Durum</label>
+          <select id="_status" name="_status">
+            <option value="published"<%= page.status === 'published' ? ' selected' : '' %>>Yayında</option>
+            <option value="draft"<%= page.status === 'draft' ? ' selected' : '' %>>Taslak (ziyaretçilere kapalı)</option>
+          </select>
+        </div>
+        <% } %>
+      </div>
+      <%- include('_seo-box', { seoTitle: page.seo_title, seoDesc: page.seo_desc, fallbackTitle: page.title, url: '/' + page.slug }) %>
+    </aside>
+  </div>
+  <div class="savebar"><span class="savebar__msg">Kaydedilmemiş değişiklikler var.</span><button class="btn btn--primary" type="submit">Kaydedin ve yayınlayın</button></div>
+</form>
+<%- include('_bottom') %>

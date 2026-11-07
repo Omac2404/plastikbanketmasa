@@ -1,0 +1,18 @@
+    </main>
+  </div>
+</div>
+
+<dialog class="picker" id="picker" aria-labelledby="picker-t">
+  <div class="picker__head">
+    <h2 id="picker-t">Görsel seçin</h2>
+    <label class="btn btn--accent btn--sm picker__up">Yeni görsel yükleyin<input type="file" accept="image/*,.svg" multiple hidden></label>
+    <input class="picker__search" type="search" placeholder="Ara…" aria-label="Görsellerde ara">
+    <form method="dialog"><button class="btn btn--ghost btn--sm" aria-label="Kapat">Kapat</button></form>
+  </div>
+  <p class="picker__status" role="status"></p>
+  <ul class="picker__grid"></ul>
+</dialog>
+
+<script src="/assets/js/panel.js?v=<%= assetVersion %>" defer></script>
+</body>
+</html>

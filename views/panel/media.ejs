@@ -1,0 +1,40 @@
+<%- include('_top') %>
+<div class="pagehead">
+  <div><h1 class="h1">Medya</h1><p class="muted">Yüklenen görseller otomatik olarak WebP’ye çevrilir ve üç boyutta saklanır. Toplam <%= total.n %> dosya, <%= (total.s / 1024 / 1024).toFixed(1) %> MB.</p></div>
+  <form class="search" method="get"><label class="sr" for="mq">Medyada arayın</label><input id="mq" type="search" name="q" value="<%= q %>" placeholder="Dosya adı veya açıklama"><button class="btn btn--ghost btn--sm">Arayın</button></form>
+</div>
+
+<label class="drop" data-drop>
+  <input type="file" accept="image/*,.svg,.pdf" multiple hidden data-drop-input>
+  <strong>Dosyaları buraya bırakın</strong>
+  <span>veya tıklayıp seçin · JPG, PNG, WebP, GIF, SVG, PDF · en fazla 15 MB</span>
+  <span class="drop__status" role="status" aria-live="polite"></span>
+</label>
+
+<% if (!items.length) { %><p class="empty">Dosya bulunamadı.</p><% } %>
+<ul class="mgrid">
+  <% for (const m of items) { const url = '/uploads/' + m.file; %>
+  <li class="mcard">
+    <a class="mcard__img" href="<%= url %>" target="_blank" rel="noopener">
+      <% if (m.mime === 'application/pdf') { %><span class="mcard__pdf">PDF</span><% } else { %><img src="<%= thumb(url) %>" alt="" loading="lazy"><% } %>
+    </a>
+    <div class="mcard__body">
+      <p class="mcard__name" title="<%= m.original_name %>"><%= m.original_name || m.file %></p>
+      <p class="muted small"><%= m.width ? m.width + '×' + m.height + ' · ' : '' %><%= Math.round((m.size || 0) / 1024) %> KB</p>
+      <form method="post" action="/panel/medya/<%= m.id %>" class="mcard__alt" data-alt-form>
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <label class="sr" for="alt<%= m.id %>">Görsel açıklaması</label>
+        <input id="alt<%= m.id %>" name="alt" value="<%= m.alt %>" placeholder="Görsel açıklaması (alt metin)">
+      </form>
+      <div class="mcard__acts">
+        <button type="button" class="btn btn--text btn--sm" data-copy="<%= url %>">Adresi kopyalayın</button>
+        <form method="post" action="/panel/medya/<%= m.id %>/sil" class="inline" data-media-del="<%= m.id %>">
+          <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <button class="btn btn--text btn--sm btn--danger-text">Silin</button>
+        </form>
+      </div>
+    </div>
+  </li>
+  <% } %>
+</ul>
+<%- include('_bottom') %>

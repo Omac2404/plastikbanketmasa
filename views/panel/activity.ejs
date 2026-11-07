@@ -1,0 +1,11 @@
+<%- include('_top') %>
+<div class="pagehead"><div><h1 class="h1">Aktivite</h1><p class="muted">Kim, ne zaman, ne yaptı. Son 300 kayıt.</p></div></div>
+<div class="card card--flush">
+  <table class="table">
+    <thead><tr><th>İşlem</th><th>Kayıt</th><th>Kullanıcı</th><th>Zaman</th></tr></thead>
+    <tbody>
+      <% for (const r of rows) { %><tr><td><%= r.action %></td><td><%= r.target %></td><td><%= r.user_name %></td><td class="muted nowrap" title="<%= r.created_at %> UTC"><%= timeAgo(r.created_at) %></td></tr><% } %>
+    </tbody>
+  </table>
+</div>
+<%- include('_bottom') %>

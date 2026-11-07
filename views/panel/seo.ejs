@@ -1,0 +1,23 @@
+<%- include('_top') %>
+<form method="post" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead"><div><h1 class="h1">SEO</h1><p class="muted">Arama motorlarında ve paylaşımlarda nasıl göründüğünüz. Sayfa bazında başlık ve açıklama her sayfanın kendi düzenleme ekranında.</p></div><button class="btn btn--primary">Kaydedin</button></div>
+  <div class="narrow">
+    <div class="card stack">
+      <div class="field"><label class="label" for="tpl">Başlık şablonu</label><input id="tpl" name="title_tpl" value="<%= seo.title_tpl %>"><p class="hint"><code>%page%</code> sayfa adı, <code>%site%</code> site adı yerine geçer.</p></div>
+      <div class="field"><label class="label" for="desc">Varsayılan açıklama</label><textarea id="desc" name="description" rows="3" data-count="160"><%= seo.description %></textarea><p class="hint"><span data-counter>0</span> / 160 karakter. Açıklaması boş sayfalarda kullanılır.</p></div>
+      <div class="field"><label class="label" for="url">Site adresi</label><input id="url" name="site_url" value="<%= seo.site_url %>" spellcheck="false"><p class="hint">https:// ile tam adres. Site haritası ve paylaşım bağlantıları bunu kullanır.</p></div>
+      <label class="switch"><input type="checkbox" name="indexable" value="1"<%= seo.indexable !== false ? ' checked' : '' %>><span>Arama motorlarına açık</span></label>
+      <p class="hint">Kapatırsanız site Google’dan çekilir. Yalnızca test aşamasında kapatın.</p>
+    </div>
+    <div class="card stack">
+      <%- include('_field', { f: { label: 'Paylaşım görseli (1200×630)', type: 'image', help: 'WhatsApp, Facebook, LinkedIn bağlantı kartında görünür.' }, name: 'og_image', value: seo.og_image, idp: 's' }) %>
+      <%- include('_field', { f: { label: 'Site simgesi (favicon)', type: 'image', help: 'Kare bir görsel seçin.' }, name: 'favicon', value: seo.favicon, idp: 's' }) %>
+    </div>
+    <div class="card stack">
+      <div class="field"><label class="label" for="gtm">Google Tag Manager kimliği</label><input id="gtm" name="gtm_id" value="<%= seo.gtm_id %>" placeholder="GTM-XXXXXXX" spellcheck="false"><p class="hint">Ziyaretçi çerez bildiriminde "Kabul et" derse yüklenir (KVKK uyumu).</p></div>
+      <p class="hint">Site haritası: <a class="mono" href="/sitemap.xml" target="_blank">/sitemap.xml</a> · Robots: <a class="mono" href="/robots.txt" target="_blank">/robots.txt</a></p>
+    </div>
+  </div>
+</form>
+<%- include('_bottom') %>

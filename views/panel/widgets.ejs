@@ -1,0 +1,33 @@
+<%- include('_top') %>
+<div class="pagehead"><div><h1 class="h1">Site öğeleri</h1><p class="muted">Sayfaların üstüne binen küçük parçalar. Her biri ayrı açılıp kapanır; kapalıyken sitede hiç görünmez. Bağlantı boş bırakılırsa WhatsApp, telefon ve e-posta simgeleri Ortak alanlar’daki bilgileri kullanır.</p></div></div>
+
+<% for (const [which, label, desc] of [['floating', 'Yüzen butonlar', 'Sayfanın köşesinde duran hızlı iletişim düğmeleri. Mobil alt menü açıkken telefonda gizlenir.'], ['mobilebar', 'Mobil alt menü', 'Telefonda ekranın altına sabitlenen menü. En fazla 5 madde.']]) { const w = widgets[which] || { items: [] }; %>
+<form method="post" class="card" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="which" value="<%= which %>">
+  <div class="card__head">
+    <div><h2 class="h2"><%= label %></h2><p class="muted small"><%= desc %></p></div>
+    <label class="switch"><input type="checkbox" name="enabled" value="1"<%= w.enabled ? ' checked' : '' %>><span>Açık</span></label>
+  </div>
+  <% if (which === 'floating') { %>
+  <fieldset class="field"><legend class="label">Konum</legend>
+    <label class="radio"><input type="radio" name="position" value="left"<%= w.position === 'left' ? ' checked' : '' %>> Sol alt</label>
+    <label class="radio"><input type="radio" name="position" value="right"<%= w.position !== 'left' ? ' checked' : '' %>> Sağ alt</label>
+  </fieldset>
+  <% } %>
+  <ol class="mlist" data-mlist>
+    <% const row = (it) => { %>
+    <li class="mlist__item mlist__item--w">
+      <div class="mlist__tools"><button type="button" data-list-up aria-label="Yukarı">↑</button><button type="button" data-list-down aria-label="Aşağı">↓</button></div>
+      <div class="field"><label class="label">Simge<select name="icon"><% for (const [k, l] of ICONS) { %><option value="<%= k %>"<%= it.icon === k ? ' selected' : '' %>><%= l %></option><% } %></select></label></div>
+      <div class="field"><label class="label">Etiket<input name="label" value="<%= it.label %>"></label></div>
+      <div class="field"><label class="label">Bağlantı<input name="url" value="<%= it.url %>" placeholder="Boşsa otomatik" spellcheck="false"></label></div>
+      <div class="field"><label class="label">Görünürlük<select name="visibility"><% for (const [k, l] of VIS) { %><option value="<%= k %>"<%= it.visibility === k ? ' selected' : '' %>><%= l %></option><% } %></select></label></div>
+      <button type="button" class="btn btn--text btn--sm" data-list-del>Silin</button>
+    </li>
+    <% }; for (const it of (w.items || [])) row(it); %>
+  </ol>
+  <template><% row({ icon: 'whatsapp', label: '', url: '', visibility: 'all' }) %></template>
+  <div class="row-btns"><button type="button" class="btn btn--ghost btn--sm" data-mlist-add>+ Madde ekleyin</button><span class="spacer"></span><button class="btn btn--primary" type="submit">Kaydedin</button></div>
+</form>
+<% } %>
+<%- include('_bottom') %>

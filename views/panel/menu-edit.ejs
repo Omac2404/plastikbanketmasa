@@ -1,0 +1,30 @@
+<%- include('_top') %>
+<form method="post" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead">
+    <div><p class="crumb"><a href="/panel/menuler">Menüler</a> /</p><h1 class="h1"><%= menu.label %></h1><p class="muted"><%= menu.description %></p></div>
+    <button class="btn btn--primary" type="submit">Menüyü kaydedin</button>
+  </div>
+  <div class="narrow">
+    <% if (nested) { %><p class="hint">"Alt madde" işaretli maddeler, üstündeki ana maddenin açılır menüsünde görünür.</p><% } %>
+    <datalist id="links"><% for (const l of links) { %><option value="<%= l.url %>"><%= l.kind %>: <%= l.title %></option><% } %></datalist>
+    <ol class="mlist" data-mlist>
+      <% const row = (it) => { %>
+      <li class="mlist__item<%= it.level == 1 ? ' is-child' : '' %>">
+        <div class="mlist__tools">
+          <button type="button" data-list-up aria-label="Yukarı taşıyın">↑</button>
+          <button type="button" data-list-down aria-label="Aşağı taşıyın">↓</button>
+        </div>
+        <div class="field"><label class="label">Görünen ad<input name="label" value="<%= it.label %>"></label></div>
+        <div class="field"><label class="label">Bağlantı<input name="url" value="<%= it.url %>" list="links" spellcheck="false" placeholder="/sayfa-adresi veya https://..."></label></div>
+        <% if (nested) { %><label class="switch switch--sm"><input type="checkbox" data-level<%= it.level == 1 ? ' checked' : '' %>><span>Alt madde</span></label><input type="hidden" name="level" value="<%= it.level == 1 ? 1 : 0 %>"><% } %>
+        <button type="button" class="btn btn--text btn--sm" data-list-del>Silin</button>
+      </li>
+      <% }; for (const it of items) row(it); %>
+    </ol>
+    <template id="mrow"><% row({ label: '', url: '', level: 0 }) %></template>
+    <button type="button" class="btn btn--ghost" data-mlist-add>+ Madde ekleyin</button>
+  </div>
+  <div class="savebar"><span class="savebar__msg">Kaydedilmemiş değişiklikler var.</span><button class="btn btn--primary" type="submit">Menüyü kaydedin</button></div>
+</form>
+<%- include('_bottom') %>

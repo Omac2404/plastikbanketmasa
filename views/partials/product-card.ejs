@@ -1,0 +1,15 @@
+<% const m = (p.d.main || {}); %>
+<article class="pcard">
+  <a class="pcard__media" href="/<%= p.slug %>" tabindex="-1" aria-hidden="true">
+    <%- img(m.cover, { alt: '', sizes: '(min-width: 1100px) 300px, (min-width: 640px) 45vw, 92vw' }) %>
+  </a>
+  <div class="pcard__body">
+    <p class="pcard__cat"><%= p.category === 'sandalye' ? 'Sandalye' : 'Masa' %></p>
+    <h3 class="pcard__title"><a href="/<%= p.slug %>"><%= p.title %></a></h3>
+    <% if (m.summary) { %><p class="pcard__text"><%= m.summary %></p><% } %>
+    <% const f = ((p.d.highlights || {}).features || []).slice(0, 3); if (typeof showFeatures !== 'undefined' && showFeatures && f.length) { %>
+      <ul class="ticks"><% for (const x of f) { %><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><%= x.text %></li><% } %></ul>
+    <% } %>
+    <span class="pcard__more" aria-hidden="true">Ürünü inceleyin<svg class="ic"><use href="#i-arrow"/></svg></span>
+  </div>
+</article>

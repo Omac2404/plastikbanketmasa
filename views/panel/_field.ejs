@@ -1,0 +1,84 @@
+<%
+  // Parametreler: f (alan tanımı), name (form adı), value, idp (id öneki)
+  const id = (idp || 'f') + '-' + name.replace(/[^a-z0-9]/gi, '-');
+  const v = value == null ? '' : value;
+%>
+<% if (f.type === 'list') { const items = Array.isArray(v) ? v : []; %>
+<fieldset class="list" data-list="<%= name %>">
+  <legend class="label"><%= f.label %><% if (f.hint) { %> <span class="hint-inline"><%= f.hint %></span><% } %></legend>
+  <ol class="list__items">
+    <% items.forEach((item, i) => { %>
+      <%- include('_list-item', { f, name, item, idx: i, idp }) %>
+    <% }) %>
+  </ol>
+  <template><%- include('_list-item', { f, name, item: {}, idx: '__i__', idp }) %></template>
+  <button type="button" class="btn btn--ghost btn--sm" data-list-add>+ Madde ekleyin</button>
+</fieldset>
+
+<% } else if (f.type === 'gallery') { const imgs = Array.isArray(v) ? v : []; %>
+<div class="field">
+  <p class="label" id="<%= id %>-l"><%= f.label %></p>
+  <ul class="gallery" data-gallery="<%= name %>" aria-labelledby="<%= id %>-l">
+    <% for (const u of imgs) { %>
+    <li class="gallery__item"><img src="<%= thumb(u) %>" alt=""><input type="hidden" name="<%= name %>" value="<%= u %>">
+      <span class="gallery__tools"><button type="button" data-g-left aria-label="Sola taşıyın">‹</button><button type="button" data-g-right aria-label="Sağa taşıyın">›</button><button type="button" data-g-del aria-label="Kaldırın">✕</button></span></li>
+    <% } %>
+  </ul>
+  <button type="button" class="btn btn--ghost btn--sm" data-gallery-add>+ Görsel ekleyin</button>
+</div>
+
+<% } else if (f.type === 'image') { %>
+<div class="field imgfield" data-imgfield>
+  <p class="label" id="<%= id %>-l"><%= f.label %></p>
+  <div class="imgfield__box">
+    <div class="imgfield__prev"><% if (v) { %><img src="<%= thumb(v) %>" alt=""><% } else { %><span>Görsel seçilmedi</span><% } %></div>
+    <div class="imgfield__ctrl">
+      <input type="text" name="<%= name %>" value="<%= v %>" id="<%= id %>" aria-labelledby="<%= id %>-l" placeholder="/uploads/... veya https://..." data-imgurl>
+      <div class="row-btns">
+        <button type="button" class="btn btn--ghost btn--sm" data-pick>Kütüphaneden seçin</button>
+        <button type="button" class="btn btn--text btn--sm" data-img-clear<%- v ? '' : ' hidden' %>>Kaldırın</button>
+      </div>
+      <% if (f.help) { %><p class="hint"><%= f.help %></p><% } %>
+    </div>
+  </div>
+</div>
+
+<% } else { %>
+<div class="field<%= f.type === 'toggle' ? ' field--toggle' : '' %>">
+  <% if (f.type === 'toggle') { %>
+    <label class="switch"><input type="checkbox" name="<%= name %>" value="1" id="<%= id %>"<%= v ? ' checked' : '' %>><span><%= f.label %></span></label>
+  <% } else { %>
+    <label class="label" for="<%= id %>"><%= f.label %></label>
+    <% if (f.type === 'textarea') { %>
+      <textarea id="<%= id %>" name="<%= name %>" rows="<%= f.rows || 3 %>"<%- f.help ? ` aria-describedby="${id}-h"` : '' %>><%= v %></textarea>
+    <% } else if (f.type === 'markdown') { %>
+      <div class="md" data-md>
+        <div class="md__bar" role="toolbar" aria-label="Metin biçimlendirme">
+          <button type="button" data-md-cmd="h2" title="Ara başlık">Başlık</button>
+          <button type="button" data-md-cmd="b" title="Kalın"><b>K</b></button>
+          <button type="button" data-md-cmd="i" title="İtalik"><i>İ</i></button>
+          <button type="button" data-md-cmd="ul" title="Madde listesi">• Liste</button>
+          <button type="button" data-md-cmd="ol" title="Numaralı liste">1. Liste</button>
+          <button type="button" data-md-cmd="link" title="Bağlantı">Bağlantı</button>
+          <button type="button" data-md-cmd="img" title="Görsel ekle">Görsel</button>
+          <span class="md__sp"></span>
+          <button type="button" data-md-tab="edit" aria-pressed="true">Yazın</button>
+          <button type="button" data-md-tab="preview" aria-pressed="false">Önizleyin</button>
+        </div>
+        <textarea id="<%= id %>" name="<%= name %>" rows="<%= f.rows || 12 %>" class="md__ta"><%= v %></textarea>
+        <div class="md__preview prose" hidden></div>
+      </div>
+      <p class="hint" id="<%= id %>-h">Ara başlık için satır başına <code>## </code>, kalın için <code>**metin**</code>, madde için <code>- </code> yazın. Boş satır yeni paragraf açar.</p>
+    <% } else if (f.type === 'select') { %>
+      <select id="<%= id %>" name="<%= name %>">
+        <% for (const [k, l] of f.options) { %><option value="<%= k %>"<%= v === k ? ' selected' : '' %>><%= l %></option><% } %>
+      </select>
+    <% } else if (f.type === 'number') { %>
+      <input id="<%= id %>" name="<%= name %>" type="number" value="<%= v %>">
+    <% } else { %>
+      <input id="<%= id %>" name="<%= name %>" type="text" value="<%= v %>"<%- f.type === 'url' ? ' inputmode="url" spellcheck="false"' : '' %><%- f.help ? ` aria-describedby="${id}-h"` : '' %>>
+    <% } %>
+    <% if (f.help && f.type !== 'markdown') { %><p class="hint" id="<%= id %>-h"><%= f.help %></p><% } %>
+  <% } %>
+</div>
+<% } %>

@@ -1,0 +1,20 @@
+<%- include('_top') %>
+<form method="post" data-dirty-guard>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="pagehead"><div><h1 class="h1">Genel ayarlar</h1><p class="muted">Site bilgileri, panelin görünümü ve bakım modu.</p></div><button class="btn btn--primary">Kaydedin</button></div>
+  <div class="narrow">
+    <div class="card stack">
+      <h2 class="h2">Site bilgileri</h2>
+      <div class="field"><label class="label" for="sn">Site adı</label><input id="sn" name="name" value="<%= s.name %>"><p class="hint">Sayfa başlıklarında ve panelde görünür.</p></div>
+      <div class="field"><label class="label" for="pn">Panel adı</label><input id="pn" name="panel_name" value="<%= s.panel_name %>"><p class="hint">Giriş ekranının başlığı.</p></div>
+      <div class="field"><label class="label" for="ac">Panel vurgu rengi</label><div class="color"><input id="ac" name="accent" type="color" value="<%= s.accent || '#FF7A28' %>"><span class="mono"><%= s.accent || '#FF7A28' %></span></div></div>
+    </div>
+    <div class="card stack">
+      <h2 class="h2">Bakım modu</h2>
+      <p class="muted">Açıkken ziyaretçiler bakım sayfasını görür. Panelde oturum açmış kullanıcılar siteyi normal gezer.</p>
+      <label class="switch"><input type="checkbox" name="maintenance" value="1"<%= s.maintenance ? ' checked' : '' %>><span>Bakım modu açık</span></label>
+      <div class="field"><label class="label" for="mt">Bakım sayfası metni</label><textarea id="mt" name="maintenance_text" rows="3"><%= s.maintenance_text %></textarea></div>
+    </div>
+  </div>
+</form>
+<%- include('_bottom') %>

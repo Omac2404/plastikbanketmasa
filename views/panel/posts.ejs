@@ -1,0 +1,37 @@
+<%- include('_top') %>
+<div class="pagehead">
+  <div><h1 class="h1">Blog yazıları</h1>
+    <p class="muted"><%= counts.total || 0 %> yazı · <%= counts.pub || 0 %> yayında · <%= counts.draft || 0 %> taslak</p></div>
+  <div class="row-btns"><a class="btn btn--ghost" href="/panel/blog/kategoriler">Kategoriler</a><a class="btn btn--primary" href="/panel/blog/yeni">+ Yeni yazı</a></div>
+</div>
+<nav class="tabs" aria-label="Yazı filtresi">
+  <a href="/panel/blog"<%- !trash ? ' aria-current="page"' : '' %>>Yazılar</a>
+  <a href="/panel/blog?durum=cop"<%- trash ? ' aria-current="page"' : '' %>>Çöp kutusu (<%= counts.trash || 0 %>)</a>
+</nav>
+<div class="card card--flush">
+  <% if (!posts.length) { %><p class="empty"><%= trash ? 'Çöp kutusu boş.' : 'Henüz yazı yok. İlk yazıyı ekleyin.' %></p><% } else { %>
+  <table class="table">
+    <thead><tr><th>Başlık</th><th>Kategori</th><th>Durum</th><th>Tarih</th><th><span class="sr">İşlem</span></th></tr></thead>
+    <tbody>
+    <% for (const p of posts) { %>
+      <tr>
+        <td><a href="/panel/blog/<%= p.id %>"><strong><%= p.title %></strong></a><br><span class="mono muted">/<%= p.slug %></span></td>
+        <td><%= p.cat_name || '—' %></td>
+        <td><span class="pill pill--<%= p.status %>"><%= p.status === 'published' ? 'yayında' : 'taslak' %></span></td>
+        <td class="muted nowrap"><%= p.published_at ? dateTR(p.published_at) : '—' %></td>
+        <td class="right nowrap">
+          <% if (trash) { %>
+            <form class="inline" method="post" action="/panel/blog/<%= p.id %>/geri"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--ghost btn--sm">Geri alın</button></form>
+            <% if (can('admin')) { %><form class="inline" method="post" action="/panel/blog/<%= p.id %>/sil"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--danger btn--sm" data-confirm="“<%= p.title %>” kalıcı olarak silinsin mi?">Kalıcı silin</button></form><% } %>
+          <% } else { %>
+            <a class="btn btn--ghost btn--sm" href="/panel/blog/<%= p.id %>">Düzenleyin</a>
+            <form class="inline" method="post" action="/panel/blog/<%= p.id %>/cop"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn--text btn--sm">Çöpe atın</button></form>
+          <% } %>
+        </td>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
+<%- include('_bottom') %>

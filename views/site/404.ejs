@@ -1,0 +1,14 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header', { bodyClass: 'page-404' }) %>
+<section class="pagehead">
+  <div class="wrap">
+    <p class="nf__code">404</p>
+    <h1 class="pagehead__title">Aradığınız sayfa burada değil</h1>
+    <p class="pagehead__lead">Sayfa taşınmış ya da adı değişmiş olabilir. Aşağıdaki ürünlerden birine göz atabilir veya ana sayfaya dönebilirsiniz.</p>
+    <p><a class="btn btn--dark" href="/">Ana sayfaya dönün</a></p>
+  </div>
+</section>
+<% if (typeof products !== 'undefined' && products.length) { %>
+<section class="sec sec--tight"><div class="wrap"><div class="pgrid"><% for (const p of products) { %><%- include('../partials/product-card', { p }) %><% } %></div></div></section>
+<% } %>
+<%- include('../partials/footer') %>
